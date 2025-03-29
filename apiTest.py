@@ -18,3 +18,6 @@ for job in results.get("jobs_results", []):
     print(job["via"])  # z.B. LinkedIn, Glassdoor etc.
     print(job["description"][:150], "...\n")  # kurze Vorschau
     print(job["description"][:150], "...\n")  # kurze Vorschau
+
+
+print("Hello thats new!")
