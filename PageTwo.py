@@ -1,4 +1,4 @@
 import streamlit as st
 
 def page_two():
-    return 2
+    st.write("PAGE TWO")
