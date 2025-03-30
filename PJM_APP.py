@@ -7,16 +7,31 @@ from PageFour import page_four
 
 
 # Menu Sidebar wird definiert. Der Standartwert ist wird auf LandingPage gesetzt
-st.sidebar.title("TITEL SIDEBAR")
-menu = st.sidebar.markdown(
-    "SUBTITEL SIDEBAR",
-    ["Landing Page",
-     "Seite 1",
-     "Seite 2",
-     "Seite 3",
-     "Seite 4"],
-    index=0             # Definition des Standartwertes (LandingPage)
-)
+# st.sidebar.title("TITEL SIDEBAR")
+# menu = st.sidebar.radio(
+#     "SUBTITEL SIDEBAR",
+#     ["Landing Page",
+#      "Seite 1",
+#      "Seite 2",
+#      "Seite 3",
+#      "Seite 4"],
+#     index=0             # Definition des Standartwertes (LandingPage)
+# )
+
+pages = ["Landing Page", "Page One", "Page Two", "Page Three", "Page Four"]
+
+if "current_page" not in st.session_state:
+    st.session_state["current_page"] = "Home"
+
+# Sidebar mit einfachen Textlinks
+st.sidebar.title("Navigation")
+for page in pages:
+    # Aktive Seite hervorheben
+    if page == st.session_state["current_page"]:
+        st.sidebar.markdown(f"**> {page}**")
+    else:
+        if st.sidebar.markdown(f"[{page}](#{page})", unsafe_allow_html=True):
+            st.session_state["current_page"] = page
 
 # Page Routing basierend auf Sidebar Auswahl
 if menu == "Landing Page":
