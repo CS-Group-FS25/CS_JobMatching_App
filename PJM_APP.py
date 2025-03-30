@@ -8,7 +8,7 @@ from PageFour import page_four
 
 # Menu Sidebar wird definiert. Der Standartwert ist wird auf LandingPage gesetzt
 st.sidebar.title("TITEL SIDEBAR")
-menu = st.sidebar.selectbox(
+menu = st.sidebar.radio(
     "Choose a page",
     ["Landing Page",
      "Seite 1",
