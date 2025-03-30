@@ -1,9 +1,9 @@
 import streamlit as st
+from LandingPage import landing_page
 from PageOne import page_one
 from PageTwo import page_two
 from PageThree import page_three
 from PageFour import page_four
-from LandingPage import test_number          # Bisher nur zum Test und ohne tatsächliche Funktion
 
 
 # Menu Sidebar wird definiert. Der Standartwert ist wird auf LandingPage gesetzt
