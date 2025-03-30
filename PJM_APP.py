@@ -33,14 +33,21 @@ for page in pages:
         if st.sidebar.markdown(f"[{page}](#{page})", unsafe_allow_html=True):
             st.session_state["current_page"] = page
 
+if st.session_state["current_page"] == "Home":
+    st.markdown("### Willkommen auf der Startseite!")
+elif st.session_state["current_page"] == "Add Pickups":
+    st.markdown("### Pickup hinzufügen")
+elif st.session_state["current_page"] == "View Pickups":
+    st.markdown("### Pickup-Übersicht")
+
 # Page Routing basierend auf Sidebar Auswahl
-if menu == "Landing Page":
-    landing_page()
-elif menu == "Seite 1":
-    page_one()
-elif menu == "Seite 2":
-    page_two()
-elif menu == "Seite 3":
-    page_three()
-elif menu == "Seite 4":
-    page_four()
+# if menu == "Landing Page":
+#     landing_page()
+# elif menu == "Seite 1":
+#     page_one()
+# elif menu == "Seite 2":
+#     page_two()
+# elif menu == "Seite 3":
+#     page_three()
+# elif menu == "Seite 4":
+#     page_four()
