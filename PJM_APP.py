@@ -3,5 +3,5 @@ from Feature_01 import test_number
 
 x = test_number(4)
 
-st.write("THIS IS THE PJM APP XX")
+st.write("THIS IS THE PJM APP")
 st.write("WE ARE THE NUMBER ", x)
