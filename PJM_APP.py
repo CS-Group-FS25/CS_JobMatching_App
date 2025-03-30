@@ -6,7 +6,7 @@ from PageThree import page_three
 from PageFour import page_four
 
 
-# Menu Sidebar wird definiert. Der Standartwert ist wird auf LandingPage gesetzt
+### Menu Sidebar wird definiert. Der Standartwert ist wird auf LandingPage gesetzt
 st.sidebar.title("TITEL SIDEBAR")
 menu = st.sidebar.radio(
     "SUBTITEL SIDEBAR",
@@ -19,7 +19,7 @@ menu = st.sidebar.radio(
 )
 
 
-# Page Routing basierend auf Sidebar Auswahl
+### Page Routing basierend auf Sidebar Auswahl
 if menu == "Landing Page":
     landing_page()
 elif menu == "Seite 1":
