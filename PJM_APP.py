@@ -11,9 +11,9 @@ st.sidebar.title("TITEL SIDEBAR")
 menu = st.sidebar.selectbox(
     "Choose a page",
     ["Landing Page",
-     "Seite 1"
-     "Seite 2"
-     "Seite 3"
+     "Seite 1",
+     "Seite 2",
+     "Seite 3",
      "Seite 4"],
     index=0             # Definition des Standartwertes (LandingPage)
 )
