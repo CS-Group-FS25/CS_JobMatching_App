@@ -1,5 +1,5 @@
 import streamlit as st
-
+st.write("This is the landing page")
 def landing_page():
     """Kommentar für Funktionen so formatieren. Dadurch kann das hier geschriebene
     auch mit help(laning_page) abgerufen werden.
@@ -17,5 +17,5 @@ menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region"
         st.write("This is the Startseite page")
 
     if menü == "Job Matcher":
-        import PageOne.py 
+    
         
