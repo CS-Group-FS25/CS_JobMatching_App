@@ -2,15 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np  
 
-class NutzerInfo:
-    def __init__(age, education_status, current_job, desired_job):
-        self.age = age
-        self.education_status = education_status
-        self.current_job = current_job
-        self.desired_job = desired_job
 
-    def __str__(self):
-        return f"Age: {self.age}, Education Status: {self.education_status}, Current Job: {self.current_job}, Desired Job: {self.desired_job}"
 
 
 st.write("This is the Job Matcher page")
