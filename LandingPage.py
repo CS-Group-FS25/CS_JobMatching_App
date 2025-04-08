@@ -11,8 +11,7 @@ def landing_page():
 
     menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region", "Gehaltsfinder", "About" ))
     if menü == "Startseite": 
-    st.write("This is the Startseite page")
+        st.write("This is the Startseite page")
 
     if menü == "Job Matcher":
-    
     
