@@ -1,7 +1,4 @@
 import streamlit as st
-
-def page_one():
-    st.write("PAGE ONE")
 import pandas as pd
 import numpy as np  
 
@@ -15,8 +12,6 @@ class NutzerInfo:
     def __str__(self):
         return f"Age: {self.age}, Education Status: {self.education_status}, Current Job: {self.current_job}, Desired Job: {self.desired_job}"
 
-if "nutzer" not in st.session_state:
-    st.session_state.nutzer = NutzerInfo()
 
 st.write("This is the Job Matcher page")
 st.write("This app will help you find the best job for you")

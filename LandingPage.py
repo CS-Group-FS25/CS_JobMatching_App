@@ -14,4 +14,5 @@ def landing_page():
         st.write("This is the Startseite page")
 
     if menü == "Job Matcher":
-    
+
+landing_page
