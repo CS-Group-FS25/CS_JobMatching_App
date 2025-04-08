@@ -17,3 +17,5 @@ menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region"
         st.write("This is the Startseite page")
 
     if menü == "Job Matcher":
+        import PageOne.py 
+        
