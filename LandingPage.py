@@ -1,10 +1,6 @@
 import streamlit as st
 st.write("This is the landing page")
-def landing_page():
-    """Kommentar für Funktionen so formatieren. Dadurch kann das hier geschriebene
-    auch mit help(laning_page) abgerufen werden.
-    """
-    
+
     
     
 st.title("Job Fit Application")
@@ -18,4 +14,4 @@ if menü == "Startseite":
     st.write("This is the Startseite page")
 
 if menü == "Job Matcher":
-    import PageOne.py
+    import PageOne 
