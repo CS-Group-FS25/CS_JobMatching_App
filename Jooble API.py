@@ -1,5 +1,6 @@
 #API von Jooble 
 #API ist begrenzt auf 500 Versuche, kann aber neu Anfragen
+#Man findet allerdings keine Schweizer jobs sondern lediglich Jobs in den USA
 
 api_key = "191d9abc-7de2-4e48-a82f-ad26afef2234"
 
@@ -12,7 +13,7 @@ connection = http.client.HTTPConnection(host)
 #request headers
 headers = {"Content-type": "application/json"}
 #json query
-body = '{ "keywords": "it", "location": "Bern"}'
+body = '{ "keywords": "IT", "location": "Los Angeles"}'
 
 connection.request('POST','/api/' + key, body, headers)
 response = connection.getresponse()
