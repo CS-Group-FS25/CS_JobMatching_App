@@ -21,5 +21,11 @@ if menu == "Startseite":
         st.session_state.seite = "Job Matcher"
 if menu == "Job Matcher":
     st.title("Willkommen beim Job Matcher")
+    if st.sidebar.button("Zurück zur Landingpage"):
+        st.session_state.seite = "Landinpage"
+
+    
+    
+    
     
 
