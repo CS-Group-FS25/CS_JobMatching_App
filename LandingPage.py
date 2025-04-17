@@ -1,11 +1,14 @@
 import streamlit as st
 
-# Titel und Beschreibung
-
+#Setzten von session_state.seite (Speichert die Seite zwischen reloads damit Buttons funktionieren)
+if "seite" not in st.session_state:
+    st.session_state.seite = "Startseite"
 
 # Sidebar-Menü
-menu = st.sidebar.radio("Menu", ("Startseite", "Zum Job Matcher", "Job nach Region", "Gehaltsfinder", "About"))
-
+if st.session_state.seite == "Startseite":
+    menu = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region", "Gehaltsfinder", "About"))
+else:
+    menu = st.session_state.seite
 # Inhalte auf der Startseite
 if menu == "Startseite":
     st.title("Job Matching Application")
@@ -15,6 +18,7 @@ if menu == "Startseite":
     st.subheader("Schritt 2 - Zeige uns deine Stärken")
     st.subheader("Schritt 3 - Finde den Job, der zu dir passt!")
     if st.button("Jetzt Loslegen"):
-        menu = "Zum Job Matcher"
+        st.session_state.seite = "Job Matcher"
+        st.session_experimental_rerun()
 
 
