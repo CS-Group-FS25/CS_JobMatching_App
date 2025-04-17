@@ -14,3 +14,4 @@ if menu == "Startseite":
     st.subheader("Schritt 1 - zeige uns deine Interessen")
     st.subheader("Schritt 2 - Zeige uns deine Stärken")
     st.subheader("Schritt 3 - Finde den Job, der zu dir passt!")
+    st.button("Jetzt Loslegen")
