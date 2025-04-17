@@ -19,6 +19,5 @@ if menu == "Startseite":
     st.subheader("Schritt 3 - Finde den Job, der zu dir passt!")
     if st.button("Jetzt Loslegen"):
         st.session_state.seite = "Job Matcher"
-        st.session_experimental_rerun()
-
+        st.experimental_rerun()
 
