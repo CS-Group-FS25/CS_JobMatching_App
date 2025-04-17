@@ -4,7 +4,7 @@ import streamlit as st
 
 
 # Sidebar-Menü
-menu = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region", "Gehaltsfinder", "About"))
+menu = st.sidebar.radio("Menu", ("Startseite", "Zum Job Matcher", "Job nach Region", "Gehaltsfinder", "About"))
 
 # Inhalte auf der Startseite
 if menu == "Startseite":
