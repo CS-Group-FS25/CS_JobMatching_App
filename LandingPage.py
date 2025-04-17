@@ -5,10 +5,8 @@ if "seite" not in st.session_state:
     st.session_state.seite = "Startseite"
 
 # Sidebar-Menü
-if st.session_state.seite == "Startseite":
-    menu = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region", "Gehaltsfinder", "About"))
-else:
-    menu = st.session_state.seite
+menu = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region", "Gehaltsfinder", "About"), index=("Startseite", "Job Matcher", "Job nach Region", "Gehaltsfinder", "About").index(st.session_state.seite))
+
 # Inhalte auf der Startseite
 if menu == "Startseite":
     st.title("Job Matching Application")
@@ -22,7 +20,7 @@ if menu == "Startseite":
 if menu == "Job Matcher":
     st.title("Willkommen beim Job Matcher")
     if st.sidebar.button("Zurück zur Landingpage"):
-        st.session_state.seite = "Landinpage"
+        st.session_state.seite = "Startseite"
 
     
     
