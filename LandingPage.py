@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Titel und Beschreibung
-st.title("Job Fit Application")
+st.title("Job Matching Application")
 st.subheader("Welcome to your personal Job Matcher")
 st.write("Find the best job for you based on your preferences!")
 st.write("Please choose your preferred function on the left sidebar:")
@@ -11,12 +11,7 @@ menu = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region",
 
 # Inhalte je nach Menüpunkt anzeigen
 if menu == "Startseite":
-    st.write("Du bist auf der Startseite.")
-elif menu == "Job Matcher":
-    st.write("Hier wird dein perfekter Job gefunden!")
-elif menu == "Job nach Region":
-    st.write("Hier kannst du Jobs nach Region filtern.")
-elif menu == "Gehaltsfinder":
-    st.write("Finde hier Informationen zu typischen Gehältern.")
-elif menu == "About":
-    st.write("Dieses Projekt wurde von Nicolas & Team erstellt.")
+    st.write("Finde jetzt deinen Traumjob!")
+    st.subheader("Schritt 1 - zeige uns deine Interessen")
+    st.subheader("Schritt 2 - Zeige uns deine Stärken")
+    st.subheader("Schritt 3 - Finde den Job, der zu dir passt!")
