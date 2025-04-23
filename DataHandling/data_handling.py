@@ -2,8 +2,8 @@ import pandas as pd
 import re
 from collections import Counter
 
-skills_df = pd.read_csv("DataHandling/job_skills.csv", usecols=["job_link", "job_skills"])
-jobs_df = pd.read_csv("DataHandling/linkedin_job_postings.csv", usecols=["job_link", "job_title", "search_position"])
+skills_df = pd.read_csv("job_skills.csv", usecols=["job_link", "job_skills"])
+jobs_df = pd.read_csv("linkedin_job_postings.csv", usecols=["job_link", "job_title", "search_position"])
 
 
 uncleaned_title = [] # only for testing - delete later!
@@ -32,18 +32,16 @@ job_keywords = [
         "maintenance", "generalist", "representative", "tester", "superintendent", "lead", "senior", "volunteer",
         "inspector", "attorney", "cook", "general", "veterinarian", "dentist", "advocate", "cashier", "worker",
         "attendant", "medical", "coach", "guest", "operator", "psychiatrist", "foreman", "emergency", "clinical",
-        "service", "planner", "stylist", "staff", "surgeon", "management", "controller", "pediatric", "hospitalist",
+        "service", "planner", "stylist", "staff", "surgeon", "management", "controller", "hospitalist",
         "estimator", "tutor", "buyer", "private", "mechanic", "holder", "practitioner", "banker", "conductor",
         "housekeeper", "driver", "recruiter", "oncology", "partner", "chemist", "server", "lecturer",
         "physiologist", "landscaper", "receptionist", "head", "maker", "videographer", "professor", "mentor",
-        "auditor", "examiner", "principal",
+        "auditor", "examiner", "principal", "anesthesiologist"
     ]
 
 ### clear list of empty entries and duplicates
-skills_df.dropna()
-skills_df.drop_duplicates()
-jobs_df.dropna()
-jobs_df.drop_duplicates()
+skills_df = skills_df.dropna().drop_duplicates()
+jobs_df = jobs_df.dropna().drop_duplicates()
 
 ### normalize skills list
 skills_df['job_skills_cleaned'] = skills_df['job_skills'].apply(
@@ -67,12 +65,15 @@ jobs_df["matched"] = jobs_df["job_title_cleaned"].str.lower().apply(
     lambda t: any(keyword in t for keyword in job_keywords)
 )
 
-# jobs_df[jobs_df["matched"]].to_csv("DataHandling/jobtitles_cleaned_matched.csv", index=False)
-# jobs_df[~jobs_df["matched"]].to_csv("DataHandling/jobtitles_cleaned_unmatched.csv", index=False)
+# jobs_df[jobs_df["matched"]].to_csv("jobtitles_cleaned_matched.csv", index=False)
+jobs_df[~jobs_df["matched"]].to_csv("jobtitles_cleaned_unmatched.csv", index=False)
 
-### merge both jobs and skills list by matching job link
-matched_jobs_skills_df = pd.merge(jobs_df, skills_df, on='job_link', how='inner')
-matched_jobs_skills_df.to_csv("DataHandling/matched_jobs_skills.csv", index=False)
+### merge jobs list and skills list by matching job link
+jobs_df = jobs_df.drop_duplicates(subset=["job_link"])      # Make sure no job link is double
+skills_df = skills_df.drop_duplicates(subset=["job_link"])
+
+matched_jobs_skills_df = pd.merge(jobs_df[jobs_df["matched"]], skills_df, on='job_link', how='inner')
+matched_jobs_skills_df.to_csv("matched_jobs_skills.csv", index=False)
 print("final shape:", matched_jobs_skills_df.shape)
 
 
