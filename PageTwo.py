@@ -1,11 +1,18 @@
-import streamlit as st
-import requests
+def main():
+    import streamlit as st
+    import requests
 
-# BA API Konfiguration
-API_URL = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
-API_KEY = "jobboerse-jobsuche"  # Öffentlicher Key
+    # BA API Konfiguration
+    API_URL = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
+    API 
+    import streamlit as st
+    import requests
 
-def suche_jobs(beruf, ort, anzahl=10):
+    # BA API Konfiguration
+    API_URL = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
+    API_KEY = "jobboerse-jobsuche"  # Öffentlicher Key
+
+    def suche_jobs(beruf, ort, anzahl=10):
     headers = {
         "X-API-Key": API_KEY
     }
@@ -21,13 +28,13 @@ def suche_jobs(beruf, ort, anzahl=10):
         st.error(f"Fehler bei der API-Anfrage: {response.status_code}")
         return []
 
-# Streamlit UI
-st.title("💼 Job-Suche mit der Bundesagentur für Arbeit")
-beruf = st.text_input("Beruf / Stichwort", "Softwareentwickler")
-ort = st.text_input("Ort", "Berlin")
-anzahl = st.slider("Anzahl der Ergebnisse", 1, 50, 10)
+    # Streamlit UI
+    st.title("💼 Job-Suche mit der Bundesagentur für Arbeit")
+    beruf = st.text_input("Beruf / Stichwort", "Softwareentwickler")
+    ort = st.text_input("Ort", "Berlin")
+    anzahl = st.slider("Anzahl der Ergebnisse", 1, 50, 10)
 
-if st.button("🔍 Suche starten"):
+    if st.button("🔍 Suche starten"):
     jobs = suche_jobs(beruf, ort, anzahl)
     if jobs:
         for job in jobs:
