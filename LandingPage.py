@@ -1,24 +1,28 @@
 import streamlit as st
-import pandas as pd
-st.write("This is the landing page")
+import pandas as pd 
+import numpy as np
 
-    
-    
+st.set_page_config(page_title="Job Fit Application", page_icon=":briefcase:", layout="wide")
+
+menü = st.sidebar.radio("Menu", ("Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
 st.title("Job Fit Application")
-st.subheader("Welcome to your personal Job Matcher")
-st.write("Find the best job for you based on your preferences!")
-st.write("Please chose your prefered function on the left sidebar:")
+st.subheader("Wilkommen zu deinem personal Job Matcher")
+st.divider()
 
-menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Job nach Region", "Gehaltsfinder", "About" ))
-
-if menü == "Startseite":
-    st.write("Du bist auf der Startseite")
-elif menü == "Job Matcher":
-    import PageOne
-    PageOne.main()
-elif menü == "Job nach Region":
-    import PageTwo
-    PageTwo.main()
+st.markdown(
+    """ 
+    ## Intro
+    Diese App ist eine Job-Matching-Anwendung, die Ihnen hilft, den perfekten Job zu finden.
+    Sie können Ihre Fähigkeiten und Interessen eingeben, und die App wird Ihnen passende Stellenangebote vorschlagen.
+    ### An der Seite können sie aus verschiedenen Funktionen wählen!
+    Für weitere Jobs klicken sie auf die folgenden Links:
+    - [LinkedIn](https://business.linkedin.com/de-de/talent-solutions)
+    - [Step Stone](https://www.stepstone.de/)
+    """
+)
+if menü == "Job Matcher": 
+    import JobMatcher
+    JobMatcher.main() 
 elif menü == "Gehaltsfinder":
-    import PageThree
-    PageThree.main()
+    import Gehaltsfinder
+    Gehaltsfinder.main()
