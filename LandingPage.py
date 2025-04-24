@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd 
 import numpy as np
 
-st.set_page_config(page_title="Job Fit Application", page_icon=":briefcase:", layout="wide")
+st.set_page_config(page_title="Job Fit Aplication", page_icon=":briefcase:", layout="wide")
 
 menü = st.sidebar.radio("Menu", ("Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
 st.title("Job Fit Application")
