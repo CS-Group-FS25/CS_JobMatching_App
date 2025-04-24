@@ -21,8 +21,8 @@ st.markdown(
     """
 )
 if menü == "Job Matcher": 
-    import JobMatcher
-    JobMatcher.main() 
+    import PageOne
+    PageOne.main() 
 elif menü == "Gehaltsfinder":
-    import Gehaltsfinder
-    Gehaltsfinder.main()
+    import PageThree
+    PageThree.main()
