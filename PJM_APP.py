@@ -1,5 +1,5 @@
 import streamlit as st
-from LandingPage import landing_page
+from LandingPage import LandingPage
 from PageOne import page_one
 from PageTwo import page_two
 from PageThree import page_three
