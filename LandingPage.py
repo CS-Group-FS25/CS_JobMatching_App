@@ -24,7 +24,9 @@ if st.session_state.seite == "Startseite":
     st.subheader("Schritt 3 - Finde den Job, der zu dir passt!")
     
     if st.button("Jetzt Loslegen"):
-        st.session_state.seite = "Job Matcher"
+        st.session_state.seite = "Job Matcher" #Hier weiterhin das Problem, dass es einen Doppelclick
+        #benötigt um die Seite neu zu laden
+        st.experimental_rerun()
 
 # Job Matcher-Inhalte
 elif st.session_state.seite == "Job Matcher":
