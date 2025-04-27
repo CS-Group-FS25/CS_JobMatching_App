@@ -34,6 +34,7 @@ elif st.session_state.seite == "Job Matcher":
     
     if st.sidebar.button("Zurück zur Startseite"):
         st.session_state.seite = "Startseite"
+        st.rerun()
     
     
     
