@@ -8,6 +8,10 @@ seiten = ["Startseite","Job Matcher",]
 
 auswahl = st.sidebar.selectbox("Seite wählen", seiten)
 
+if auswahl != st.session_state.seite:
+    st.session_state.seite = auswahl
+    st.rerun()
+
 # Startseite-Inhalte
 if st.session_state.seite == "Startseite":
     st.title("Job Matching Application")
