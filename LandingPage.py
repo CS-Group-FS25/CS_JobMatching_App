@@ -5,7 +5,8 @@ if "seite" not in st.session_state:
     st.session_state.seite = "Startseite"
 
 
-st.session_state.seite = st.sidebar.selectbox("Seite wählen", )
+
+#st.session_state.seite = st.sidebar.selectbox("Seite wählen", )
 # Startseite-Inhalte
 if st.session_state.seite == "Startseite":
     st.title("Job Matching Application")
