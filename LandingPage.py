@@ -4,9 +4,9 @@ import streamlit as st
 if "seite" not in st.session_state:
     st.session_state.seite = "Startseite"
 
+seiten = ["Startseite","Job Matcher",]
 
-
-#st.session_state.seite = st.sidebar.selectbox("Seite wählen", )
+st.session_state.seite = st.sidebar.selectbox("Seite wählen", seiten)
 # Startseite-Inhalte
 if st.session_state.seite == "Startseite":
     st.title("Job Matching Application")
