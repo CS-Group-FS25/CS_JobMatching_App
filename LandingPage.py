@@ -40,13 +40,13 @@ if st.session_state.seite == "Startseite":
 
 # Job Matcher-Inhalte
 elif st.session_state.seite == "Job Matcher":
+    st.title("Willkommen beim Job Matcher")
     # Button selbsterklären
     if st.button("Zurück zur Startseite"):
         st.session_state.seite = "Startseite"
         st.session_state.button = True
         st.rerun()
 
-    st.title("Willkommen beim Job Matcher")
     
     
     
