@@ -4,11 +4,24 @@ import streamlit as st
 if "seite" not in st.session_state:
     st.session_state.seite = "Startseite"
 
+if "button" not in st.session_state: #Neu
+    st.session_state.button = False
+
 seiten = ["Startseite","Job Matcher",]
 
 auswahl = st.sidebar.selectbox("Seite wählen", seiten)
 
-if auswahl != st.session_state.seite:
+if st.session_state.button == False:
+    st. session_state.seite = auswahl
+
+elif st.session_state.button == True: #Neu
+    st.session_state.button = False
+
+
+
+
+
+#
     st.session_state.seite = auswahl
     st.rerun()
 
@@ -24,7 +37,7 @@ if st.session_state.seite == "Startseite":
     if st.button("Jetzt Loslegen"):
         st.session_state.seite = "Job Matcher" #Hier weiterhin das Problem, dass es einen Doppelclick
         #benötigt um die Seite neu zu laden
-        auswahl = "Job Matcher"
+        st.session_state.button = True
         st.rerun()
 
 # Job Matcher-Inhalte
@@ -33,7 +46,7 @@ elif st.session_state.seite == "Job Matcher":
     
     if st.sidebar.button("Zurück zur Startseite"):
         st.session_state.seite = "Startseite"
-        auswahl = "Startseite"
+        st.session_state.button = True
         st.rerun()
     
     
