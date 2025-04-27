@@ -19,11 +19,8 @@ elif st.session_state.button == True: #Neu
 
 
 
-
-
-#
-    st.session_state.seite = auswahl
-    st.rerun()
+    #st.session_state.seite = auswahl
+    #st.rerun()
 
 # Startseite-Inhalte
 if st.session_state.seite == "Startseite":
