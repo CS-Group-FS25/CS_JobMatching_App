@@ -11,10 +11,8 @@ seiten = ("Startseite", "Job Matcher", "About")
 if st.session_state.seite in seiten:
     menu = st.sidebar.radio("Menu", seiten, index=seiten.index(st.session_state.seite))
     st.session_state.seite = menu  # Menüauswahl auch in session_state schreiben
-    st.rerun()
 else:
     menu = st.session_state.seite
-    st.rerun()
 
 # Startseite-Inhalte
 if st.session_state.seite == "Startseite":
