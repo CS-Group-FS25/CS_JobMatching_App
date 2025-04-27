@@ -27,24 +27,26 @@ def filter_jobs_within_radius(center_coords, radius_km, jobs):
     return pd.DataFrame(nearby_jobs)
 
 def page_two():
+    # Streamlit UI
     st.title("Aktuelle Jobs in deiner Nähe")
-
     address = st.text_input("Ort eingeben", "Zürich")
     radius = st.slider("Umkreis auswählen (km)", min_value=5, max_value=100, value=25)
 
+    # Prüfen ob eine Adresse eingegeben wurde, ermitteln der Koordinaten, Jobs im Radius filtern
     if address:
         coords = get_coords_from_address(address)
         if coords:
             filtered_jobs = filter_jobs_within_radius(coords, radius, job_data)
 
+            # Wenn jobs gefunden wurden
             if not filtered_jobs.empty:
                 st.map(filtered_jobs[['lat', 'lon']])
 
-                # Zusätzlich: Details als Tabelle anzeigen
+                # Tabelle mit den Jobtiteln und Firmen
                 st.subheader("Gefundene Jobs")
                 st.dataframe(filtered_jobs[['title', 'company']])
 
-                # Schönere Karte mit pydeck
+                #  Erstellen einer schöneren, interaktiven Pydeck-Karte
                 layer = pdk.Layer(
                     "ScatterplotLayer",
                     data=filtered_jobs,
@@ -52,14 +54,14 @@ def page_two():
                     get_color='[200, 30, 0, 160]',
                     get_radius=2000,
                 )
-
+                # Einstellung der Anfangsansicht auf der Karte
                 view_state = pdk.ViewState(
                     latitude=coords[0],
                     longitude=coords[1],
                     zoom=8,
                     pitch=0,
                 )
-
+                # Deck-Objekt kombinieren (Layer + ViewState + Tooltip)
                 r = pdk.Deck(
                     layers=[layer],
                     initial_view_state=view_state,
