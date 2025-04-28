@@ -41,6 +41,9 @@ if st.session_state.seite == "Startseite":
 # Job Matcher-Inhalte
 elif st.session_state.seite == "Job Matcher":
     st.title("Willkommen beim Job Matcher")
+    import PageOne.py 
+    api_google_jobs()
+    
     # Button selbsterklären
     if st.button("Zurück zur Startseite"):
         st.session_state.seite = "Startseite"
