@@ -52,13 +52,13 @@ def datenabfrage():
     ### Profil anzeigen unterhalb der Eingabefelder
     st.expander("Profil anzeigen")
     st.markdown(f"""
-        **Alter:** {profil.alter}"
-        **Ort:** {profil.ort}"
-        **Branche:** {profil.branche}"
-        **Bildungsabschluss:** {profil.abschluss}"
-        **Akademisches Niveau:** {profil.akademisches_niveau}"
-        **Berufserfahrung:** {profil.berufserfahrung}"
-        **Arbeitszeit:** {profil.arbeitszeit}"
+        **Alter:** {profil.alter}
+        **Ort:** {profil.ort}
+        **Branche:** {profil.branche}
+        **Bildungsabschluss:** {profil.abschluss}
+        **Akademisches Niveau:** {profil.akademisches_niveau}
+        **Berufserfahrung:** {profil.berufserfahrung}
+        **Arbeitszeit:** {profil.arbeitszeit}
         """)
 
 
