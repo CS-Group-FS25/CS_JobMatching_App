@@ -87,6 +87,7 @@ def suche_jobs_BA(beruf, ort, anzahl=10):
 
 # Aufbau der Jobsuche 
 def main():
+    datenabfrage()
     st.title("💼 Job-Suche mit der Bundesagentur für Arbeit")
     st.write("Nutze diese Suche, um passende Jobs in deiner Region zu finden.")
 
