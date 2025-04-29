@@ -29,9 +29,9 @@ def datenabfrage():
     
     Alter = st.text_input("Bitte gebe dein Alter ein")
     Ort = st.text_input("In welcher Region suchst du nach einem Job?")
-    Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)", ["Finanzen", "Software", "Vertrieb", "Soziales", "Lehrer", "Baubranche", "Verwaltung"
-                                                                       "Logistik"])
-    Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
+    Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)", ["Finanzen", "Software", "Vertrieb","Beratung" "Soziales", "Lehrer", "Baubranche", "Verwaltung"
+                                                                       "Logistik", "Handel", "Industrie", "Pharma", "Dienstleistungen"])
+    Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Keine Angabe","Ja", "Nein"))
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))    
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("Keine Erfahrung", "0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
