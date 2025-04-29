@@ -5,61 +5,61 @@ import streamlit as st
 import requests
 
 def datenabfrage(): 
-import streamlit as st 
-import pandas as pd
+    import streamlit as st 
+    import pandas as pd
  
-import streamlit as st
-import requests
+    import streamlit as st
+    import requests
 
-### Benutzerprofil Klasse erstellen
+    ### Benutzerprofil Klasse erstellen
 
-class Benutzerprofil: 
-    def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit):
-        self.alter = alter
-        self.ort = ort
-        self.branche = branche
-        self.abschluss = abschluss
-        self.akademisches_niveau = akademisches_niveau
-        self.berufserfahrung = berufserfahrung
-        self.arbeitszeit = arbeitszeit
+    class Benutzerprofil: 
+        def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit):
+            self.alter = alter
+            self.ort = ort
+            self.branche = branche
+            self.abschluss = abschluss
+            self.akademisches_niveau = akademisches_niveau
+            self.berufserfahrung = berufserfahrung
+            self.arbeitszeit = arbeitszeit
 
-### Willkommen + Abfrage der Daten 
-st.title("Dein Persönlicher Job-Matcher")
-st.title("Kreiere zuerst dein persöonliches Profil")
+    ### Willkommen + Abfrage der Daten 
+    st.title("Dein Persönlicher Job-Matcher")
+    st.title("Kreiere zuerst dein persöonliches Profil")
     
-Alter = st.text_input("Bitte gebe dein Alter ein")
-Ort = st.text_input("In welcher Region suchst du?")
-Branche = st.multiselect("Welche Branche interessiert dich?", ["Finanzen", "Software", "Vertrieb", "Soziales", "Lehrer", "Baubranche", "Verwaltung"
-                                                                   "Logistik"])
-Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
-if Bildungsabschluss == "Ja":
-    Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Ausbildung", "Studium", ))    
-Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
-Arbeitszeit = st.selectbox("Wie viel Zeit kannst du investieren?", ("Vollzeit", "Teilzeit", "Minijob"))
+    Alter = st.text_input("Bitte gebe dein Alter ein")
+    Ort = st.text_input("In welcher Region suchst du?")
+    Branche = st.multiselect("Welche Branche interessiert dich?", ["Finanzen", "Software", "Vertrieb", "Soziales", "Lehrer", "Baubranche", "Verwaltung"
+                                                                       "Logistik"])
+    Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
+    if Bildungsabschluss == "Ja":
+        Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Ausbildung", "Studium", ))    
+    Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
+    Arbeitszeit = st.selectbox("Wie viel Zeit kannst du investieren?", ("Vollzeit", "Teilzeit", "Minijob"))
 
 
-### aktuelles Profil speichern
-profil = Benutzerprofil(
-    alter=Alter,
-    ort=Ort,
-    branche=Branche,
-    abschluss=Bildungsabschluss,
-    akademisches_niveau=Akademisches_Niveau,
-    berufserfahrung=Berufserfahrung,
-    arbeitszeit=Arbeitszeit   
-)
+    ### aktuelles Profil speichern
+    profil = Benutzerprofil(
+        alter=Alter,
+        ort=Ort,
+        branche=Branche,
+        abschluss=Bildungsabschluss,
+        akademisches_niveau=Akademisches_Niveau,
+        berufserfahrung=Berufserfahrung,
+        arbeitszeit=Arbeitszeit   
+    )
 
-### Profil anzeigen unterhalb der Eingabefelder
-st.expander("Profil anzeigen")
-st.markdown(f"""
-    **Alter:** {profil.alter}"
-    **Ort:** {profil.ort}"
-    **Branche:** {profil.branche}"
-    **Bildungsabschluss:** {profil.abschluss}"
-    **Akademisches Niveau:** {profil.akademisches_niveau}"
-    **Berufserfahrung:** {profil.berufserfahrung}"
-    **Arbeitszeit:** {profil.arbeitszeit}"
-""")
+    ### Profil anzeigen unterhalb der Eingabefelder
+    st.expander("Profil anzeigen")
+    st.markdown(f"""
+        **Alter:** {profil.alter}"
+        **Ort:** {profil.ort}"
+        **Branche:** {profil.branche}"
+        **Bildungsabschluss:** {profil.abschluss}"
+        **Akademisches Niveau:** {profil.akademisches_niveau}"
+        **Berufserfahrung:** {profil.berufserfahrung}"
+        **Arbeitszeit:** {profil.arbeitszeit}"
+        """)
 
 
 # BA API Konfiguration
@@ -87,7 +87,6 @@ def suche_jobs(beruf, ort, anzahl=10):
 
 # Aufbau der Jobsuche 
 def main():
-    Datenabfrage
     st.title("💼 Job-Suche mit der Bundesagentur für Arbeit")
     st.write("Nutze diese Suche, um passende Jobs in deiner Region zu finden.")
 
