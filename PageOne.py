@@ -63,13 +63,13 @@ def datenabfrage():
 
 
 # BA API Konfiguration
-API_URL = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
-API_KEY = "jobboerse-jobsuche"  # Öffentlicher Key
+API_URL_BA = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
+API_KEY_BA = "jobboerse-jobsuche"  # Öffentlicher Key
 
 # Jobsuche-Funktion bei der BA
-def suche_jobs(beruf, ort, anzahl=10):
+def suche_jobs_BA(beruf, ort, anzahl=10):
     headers = {
-        "X-API-Key": API_KEY # Öffentlicher Key
+        "X-API-Key": API_KEY_BA # Öffentlicher Key
     }
     #Suchparameter
     params = {
@@ -78,7 +78,7 @@ def suche_jobs(beruf, ort, anzahl=10):
         "size": anzahl
     }
     #API Anfrage
-    response = requests.get(API_URL, headers=headers, params=params)
+    response = requests.get(API_URL_BA, headers=headers, params=params)
     if response.status_code == 200:
         return response.json().get("stellenangebote", []) # Wiedergabe der Stellenangebote
     else:
@@ -96,7 +96,7 @@ def main():
 
     if st.button("🔍 Suche starten"):
         with st.spinner("Lade Ergebnisse..."):
-            jobs = suche_jobs(beruf, ort, anzahl)
+            jobs = suche_jobs_BA(beruf, ort, anzahl)
 
         if jobs:
             st.success(f"{len(jobs)} Stellen gefunden:")
