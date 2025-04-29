@@ -42,7 +42,6 @@ if st.session_state.seite == "Startseite":
 # Job Matcher-Inhalte
 elif st.session_state.seite == "Job Matcher":
     st.title("Willkommen beim Job Matcher")
-    from PageOne import api_google_jobs
     PageOne.api_google_jobs()
    
     
