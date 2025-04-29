@@ -1,4 +1,5 @@
 import streamlit as st
+import PageOne
 
 # Initialisierung von session_state
 if "seite" not in st.session_state:
@@ -42,7 +43,7 @@ if st.session_state.seite == "Startseite":
 elif st.session_state.seite == "Job Matcher":
     st.title("Willkommen beim Job Matcher")
     from PageOne import api_google_jobs
-    api_google_jobs()
+    PageOne.api_google_jobs()
    
     
     # Button selbsterklären
