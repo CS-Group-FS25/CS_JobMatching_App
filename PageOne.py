@@ -4,6 +4,24 @@ import pandas as pd
 import streamlit as st
 import requests
 
+def main(): 
+    st.title("Dein Persönlicher Job-Matcher")
+    st.subtitle("Kreiere zuerst dein persöonliches Profil")
+    
+    Alter = st.text_input("Bitte gebe dein Alter ein")
+    Ort = st.text_input("In welcher Region suchst du?")
+    Branche = st.multiselect("Welche Branche interessiert dich?", ["Finanzen", "Software", "Vertrieb", "Soziales", "Lehrer", "Baubranche", "Verwaltung"
+                                                                   "Logistik"]
+    Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
+    if Bildungsabschluss = "Ja"
+        Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Ausbildung", "Studium", ))    
+    Berufserfahrung = st.selectbox("0-1 Jahr", "2-5 JAhre", "Mehr als 5 Jahre")
+
+
+
+
+
+
 # BA API Konfiguration
 API_URL = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
 API_KEY = "jobboerse-jobsuche"  # Öffentlicher Key
