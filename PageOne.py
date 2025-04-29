@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 import requests
 
-def Datenabfrage(): 
+def datenabfrage(): 
 import streamlit as st 
 import pandas as pd
  
