@@ -69,7 +69,7 @@ def job_suchen():
         'Region' : region ### Region in der gesucht wird
     }
     ### Adzuna API anfragen über request
-    response = request.get(url, params=parameter)
+    response = requests.get(url, params=parameter)
     
     ### Check ob Anfrage funktioniert hat
     if response.status_code == 200:
@@ -95,9 +95,12 @@ def job_suchen():
 # Aufbau der Jobsuche 
 def main():
     datenabfrage()
+    
     job_title = st.text_input("Welchen Job willst du?")
     region = st.text_input("Region")
     
     if job_title and region:
         job_suchen(job_title, region)
+    else:
+        st.warning("bitte gib sowohl einen titel als auch eine Region ein")
 
