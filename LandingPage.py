@@ -4,6 +4,12 @@ import numpy as np
 
 st.set_page_config(page_title="Job Fit Aplication", page_icon=":briefcase:", layout="wide")
 
+if "seite" not in st.session_state:
+    st.session_state.seite = "Startseite"
+# Initialisierung von session_state.button, wir abgefragt ob ein button geclickt wurde
+if "button" not in st.session_state: 
+    st.session_state.button = False
+
 menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
 st.title("Job Fit Application")
 st.subheader("Wilkommen zu deinem personal Job Matcher")
