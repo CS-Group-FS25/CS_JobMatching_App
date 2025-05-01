@@ -23,20 +23,32 @@ st.markdown(
     """
 )
 
+# Setze default-Seite
+if 'page' not in st.session_state:
+    st.session_state.page = 'home'
+
+# Navigation Buttons
 col1, col2, col3 = st.columns(3)
 with col1:
     if st.button('JobMatcher'):
-        import PageOne
-        PageOne.main()
+        st.session_state.page = 'page_one'
 with col2:
     if st.button('Klassische Job-Suche'):
-        import PageTwo
-        PageTwo.main()
+        st.session_state.page = 'page_two'
 with col3:
     if st.button('Gehaltsfinder'):
-        import PageThree
-        PageThree.main()
-    
+        st.session_state.page = 'page_three'
+
+# Seiten anzeigen
+if st.session_state.page == 'page_one':
+    import PageOne
+    PageOne.main()
+elif st.session_state.page == 'page_two':
+    import PageTwo
+    PageTwo.main()
+elif st.session_state.page == 'page_three':
+    import PageThree
+    PageThree.main()
 
 
 if menü == "Job Matcher": 
