@@ -188,18 +188,6 @@ else:
 ### JOB INDUSTRY MATCHING
 
 v5_in_place = False
-industries = [
-    "f",
-    "f",
-    "f",
-    "f",
-    "f",
-    "f",
-    "f",
-    "f",
-    "f"
-]
-
 if not os.path.exists("cluster_industry_preview.csv"):
     print("Creating file to manually match industries to job clusters")
     preview_jobs_per_cluster = (
