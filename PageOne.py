@@ -57,14 +57,6 @@ def datenabfrage():
 APP_ID = "42d55acf"
 APP_KEY = "27ac7bac51f538681d1cf3fe57d8ae3e"
 
-### Jobsuche über Adzuna als Funktion definieren
-import streamlit as st
-import requests
-
-# Adzuna API Einrichten mit API ID und Schlüssel
-APP_ID = "42d55acf"
-APP_KEY = "27ac7bac51f538681d1cf3fe57d8ae3e"
-
 def job_suchen(job_title, region):
     url = f'https://api.adzuna.com/v1/jobs/ch/search/1'  # Adzuna API für die Schweiz
 
@@ -72,8 +64,8 @@ def job_suchen(job_title, region):
     parameter = {
         'app_id': APP_ID,
         'app_key': APP_KEY,
-        'title': job_title,  # Jobtitel (richtig benannt)
-        'location': region   # Region (richtig benannt)
+        'what': job_title,  # Jobtitel (richtig benannt)
+        'where': region   # Region (richtig benannt)
     }
 
     # Adzuna API anfragen über requests
@@ -104,13 +96,41 @@ def job_suchen(job_title, region):
 # Aufbau der Jobsuche 
 def main():
     datenabfrage()
-    job_title = st.text_input("Welchen Job willst du?")
-    region = st.text_input("Region")
+    st.title("🔍 Adzuna Jobsuche")
+    st.markdown("Suche nach aktuellen Stellenanzeigen in Deutschland.")
 
-    # Überprüfen, ob der Jobtitel und die Region ausgefüllt wurden
-    if job_title and region:
-        job_suchen(job_title, region)  # Übergibt die Werte an job_suchen
-    else:
-        st.warning("Bitte gib sowohl einen Jobtitel als auch eine Region ein.")  # Falls Inputs fehlen
+    # Eingabefelder
+    job_title = st.text_input("🔧 Stichwort (z. B. Python Entwickler)", "python")
+    location = st.text_input("📍 Ort (z. B. Berlin)", "Berlin")
+    results_per_page = st.slider("📄 Anzahl der Ergebnisse", min_value=1, max_value=20, value=5)
+
+    # Button zum Auslösen der Suche
+    if st.button("🔎 Jobs suchen"):
+        with st.spinner("Suche läuft..."):
+            params = {
+                'app_id': APP_ID,
+                'app_key': APP_KEY,
+                'what': job_title,
+                'where': location,
+                'results_per_page': results_per_page,
+                'content-type': 'application/json'
+            }
+
+            response = requests.get(BASE_URL, params=params)
+
+            if response.status_code == 200:
+                data = response.json()
+                results = data.get("results", [])
+                if not results:
+                    st.info("Keine Jobs gefunden.")
+                for job in results:
+                    st.subheader(job.get("title"))
+                    st.write("📌 Firma:", job.get("company", {}).get("display_name", "Unbekannt"))
+                    st.write("📍 Ort:", job.get("location", {}).get("display_name", ""))
+                    st.write(job.get("description", "")[:300] + "...")
+                    st.markdown(f"[🔗 Zum Job]({job.get('redirect_url')})")
+                    st.markdown("---")
+            else:
+                st.error(f"Fehler beim Abrufen der Daten: {response.status_code}")
 
     
