@@ -26,7 +26,6 @@ def main():
             if r.status_code == 200 and r.json():
                 data = r.json()[0]
                 return data.get("address", {}).get("postcode", "PLZ nicht gefunden")
-
         return "PLZ nicht verfügbar"
 
     st.title("🔍 Klassische Jobsuche")
