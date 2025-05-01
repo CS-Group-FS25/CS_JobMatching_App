@@ -8,21 +8,26 @@ def main():
     # 🔁 Funktion für Reverse-Geocoding (OpenStreetMap / Nominatim)
     
     ### Versuch Plz zu lokalisieren
-    def get_postcode_from_coords(lat, lon):
-        url = "https://nominatim.openstreetmap.org/reverse"
-        params = {
-            "lat": lat,
-            "lon": lon,
-            "format": "json",
-            "addressdetails": 1
-        }
-        headers = {"User-Agent": "streamlit-job-app"}
-        response = requests.get(url, params=params, headers=headers)
-        if response.status_code == 200:
-            data = response.json()
-            return data.get("address", {}).get("postcode", "PLZ nicht gefunden")
-        return "Fehler beim Geocoding"
+    def get_postcode_from_coords_or_name(job):
+        lat = job["location"].get("latitude")
+        lon = job["location"].get("longitude")
 
+        ort = job["location"].get("display_name")
+        if ort:
+            url = "https://nominatim.openstreetmap.org/search"
+            params = {
+                "q": ort,
+                "format": "json",
+                "addressdetails": 1,
+                "limit": 1
+            }
+            headers = {"User-Agent": "streamlit-job-app"}
+            r = requests.get(url, params=params, headers=headers)
+            if r.status_code == 200 and r.json():
+                data = r.json()[0]
+                return data.get("address", {}).get("postcode", "PLZ nicht gefunden")
+
+        return "PLZ nicht verfügbar"
 
     st.title("🔍 Klassische Jobsuche")
     st.markdown("Suche nach aktuellen Stellenanzeigen in der Schweiz.")
@@ -57,15 +62,11 @@ def main():
                     st.write("📍 Ort:", job.get("location", {}).get("display_name", ""))
                     st.write(job.get("description", "")[:300] + "...")
                     st.markdown(f"[🔗 Zum Job]({job.get('redirect_url')})")
-                    ### PLz filtern
-                    lat = job["location"].get("latitude")
-                    lon = job["location"].get("longitude")
-
-                    if lat and lon:
-                        plz = get_postcode_from_coords(lat, lon)
-                        st.write("📮 PLZ:", plz)
-                    else:
-                        st.write("📮 PLZ nicht verfügbar")
+                    
+                    ### PLz filtern    
+                    plz = get_postcode_from_coords_or_name(job)
+                    st.write("📮 PLZ:", plz)
+                    
 
             else:
                 st.error(f"Fehler beim Abrufen der Daten: {response.status_code}")
