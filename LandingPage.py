@@ -20,6 +20,23 @@ st.markdown(
     - [Step Stone](https://www.stepstone.de/)
     """
 )
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button('JobMatcher'):
+        import PageOne
+        PageOne.main()
+with col2:
+    if st.button('Klassische Job-Suche'):
+        import PageTwo
+        PageTwo.main()
+with col3:
+    if st.button('Gehaltsfinder'):
+        import PageThree
+        PageThree.main()
+    
+
+
 if menü == "Job Matcher": 
     import PageOne
     PageOne.main() 
