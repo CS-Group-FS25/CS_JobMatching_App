@@ -57,7 +57,7 @@ def datenabfrage():
 APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 
-def job_suchen(job_title, region):
+def job_suchen(job_title, profil.ort):
     url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'  # Adzuna API für deutschland
 
     # Notwendige Eingaben für die Suche
@@ -65,7 +65,7 @@ def job_suchen(job_title, region):
         'app_id': APP_ID,
         'app_key': APP_KEY,
         'what': job_title,  # Jobtitel (richtig benannt)
-        'where': region   # Region (richtig benannt)
+        'where': profil.ort   # Region (richtig benannt)
     }
 
     # Adzuna API anfragen über requests
@@ -77,7 +77,7 @@ def job_suchen(job_title, region):
 
         # Überprüfen, ob Ergebnisse vorhanden sind
         if job_daten['results']:
-            st.write(f"Gefundene Jobs in {region} für {job_title}:")
+            st.write(f"Gefundene Jobs in {profil.ort} für {job_title}:")
             for job in job_daten['results']:  # Ändere 'jobs' zu 'job'
                 title = job.get('title', 'Kein Titel verfügbar')
                 company = job.get('company', {}).get('display_name', 'Unbekannt')
@@ -88,7 +88,7 @@ def job_suchen(job_title, region):
                 st.write(f"[Details anzeigen]({url})")
                 st.write("\n")
         else:
-            st.write(f"Keine Jobs für {job_title} in {region} gefunden.")
+            st.write(f"Keine Jobs für {job_title} in {profil.ort} gefunden.")
     else:
         st.write(f"Fehler bei der API-Anfrage: {response.status_code}")
 
@@ -97,8 +97,7 @@ def job_suchen(job_title, region):
 def main():
     datenabfrage()
     job_title = st.text_input("🔧 Stichwort (z. B. Python Entwickler)", "python")
-    location = st.text_input("📍 Ort (z. B. Berlin)", "Berlin")
-    job_suchen(job_title,region)
+    job_suchen(job_title,profil.ort)
     
     
 
