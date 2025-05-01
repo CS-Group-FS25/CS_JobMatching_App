@@ -7,23 +7,22 @@ def main():
     APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
     # 🔁 Funktion für Reverse-Geocoding (OpenStreetMap / Nominatim)
     
-    ### Versuch Adresse zu lokalisieren
-    def reverse_geocode(lat, lon):
-        try:
-            url = "https://nominatim.openstreetmap.org/reverse"
-            params = {
-                "lat": lat,
-                "lon": lon,
-                "format": "json"
-            }
-            headers = {"User-Agent": "streamlit-job-app"}
-            response = requests.get(url, params=params, headers=headers)
-            if response.status_code == 200:
-                data = response.json()
-                return data.get("display_name", "Unbekannte Adresse")
-        except:
-            return "Adresse konnte nicht gefunden werden"
-        return "Adresse nicht verfügbar"
+    ### Versuch Plz zu lokalisieren
+    def get_postcode_from_coords(lat, lon):
+        url = "https://nominatim.openstreetmap.org/reverse"
+        params = {
+            "lat": lat,
+            "lon": lon,
+            "format": "json",
+            "addressdetails": 1
+        }
+        headers = {"User-Agent": "streamlit-job-app"}
+        response = requests.get(url, params=params, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            return data.get("address", {}).get("postcode", "PLZ nicht gefunden")
+        return "Fehler beim Geocoding"
+
 
     st.title("🔍 Klassische Jobsuche")
     st.markdown("Suche nach aktuellen Stellenanzeigen in der Schweiz.")
@@ -58,14 +57,15 @@ def main():
                     st.write("📍 Ort:", job.get("location", {}).get("display_name", ""))
                     st.write(job.get("description", "")[:300] + "...")
                     st.markdown(f"[🔗 Zum Job]({job.get('redirect_url')})")
-                    lat = job.get("location", {}).get("latitude")
-                    lon = job.get("location", {}).get("longitude")
-                    # Rückwärtssuche nach Adresse
+                    ### PLz filtern
+                    lat = job["location"].get("latitude")
+                    lon = job["location"].get("longitude")
+
                     if lat and lon:
-                        address = reverse_geocode(lat, lon)
-                        st.write("🗺 Adresse (geschätzt):", address)    
+                        plz = get_postcode_from_coords(lat, lon)
+                        st.write("📮 PLZ:", plz)
                     else:
-                        st.write("🗺 Adresse: Keine Koordinaten verfügbar")
+                        st.write("📮 PLZ nicht verfügbar")
 
             else:
                 st.error(f"Fehler beim Abrufen der Daten: {response.status_code}")
