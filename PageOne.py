@@ -55,7 +55,7 @@ def datenabfrage():
 
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
-APP_KEY = "27ac7bac51f538681d1cf3fe57d8ae3e"
+APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 
 def job_suchen(job_title, region):
     url = f'https://api.adzuna.com/v1/jobs/ch/search/1'  # Adzuna API für die Schweiz
