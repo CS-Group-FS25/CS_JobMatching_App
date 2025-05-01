@@ -1,8 +1,8 @@
 import streamlit as st
 import requests
 
-
- st.title("🔍 Klassische Jobsuche")
+def main()
+    st.title("🔍 Klassische Jobsuche")
     st.markdown("Suche nach aktuellen Stellenanzeigen in Deutschland.")
 
     # Eingabefelder

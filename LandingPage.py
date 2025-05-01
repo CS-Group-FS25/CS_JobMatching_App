@@ -42,6 +42,9 @@ with col3:
 if menü == "Job Matcher": 
     import PageOne
     PageOne.main() 
+if menü == "Klassische Job-Suche":
+    import PageTwo
+    PageTwo.main()
 elif menü == "Gehaltsfinder":
     import PageThree
     PageThree.main()
