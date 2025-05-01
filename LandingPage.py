@@ -39,8 +39,7 @@ if 'page' not in st.session_state:
 
 # Wenn auf der Startseite: Buttons anzeigen
 if st.session_state.page == 'home':
-    st.title("Willkommen 👋")
-    st.write("Wähle eine Funktion aus:")
+    
 
     col1, col2, col3 = st.columns(3)
     with col1:
