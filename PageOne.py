@@ -3,12 +3,6 @@ import pandas as pd
 import requests
 
 def datenabfrage(): 
-    import streamlit as st 
-    import pandas as pd
- 
-    import streamlit as st
-    import requests
-
     ### Benutzerprofil Klasse erstellen
 
     class Benutzerprofil: 
@@ -27,14 +21,13 @@ def datenabfrage():
     
     Alter = st.text_input("Bitte gebe dein Alter ein")
     Ort = st.text_input("In welcher Region suchst du nach einem Job?")
-    Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)", ["Finanzen", "Software", "Vertrieb","Beratung" "Soziales", "Lehrer", "Baubranche", "Verwaltung"
+    Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)", ["Finanzen", "Software", "Vertrieb","Beratung", "Soziales", "Lehrer", "Baubranche", "Verwaltung"
                                                                        "Logistik", "Handel", "Industrie", "Pharma", "Dienstleistungen"])
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))    
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("Keine Erfahrung", "0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
     Arbeitszeit = st.selectbox("Wie viel Zeit kannst du investieren?", ("Vollzeit", "Teilzeit", "Minijob"))
-    Softskills = st.selectbox
 
 
     ### aktuelles Profil speichern
@@ -76,15 +69,15 @@ def job_suchen():
         'Region' : region ### Region in der gesucht wird
     }
     ### Adzuna API anfragen über request
-    response = request.get(url, parameter=parameter)
+    response = request.get(url, params=parameter)
     
     ### Check ob Anfrage funktioniert hat
     if response.status_code == 200:
         job_daten = response.json()
         
-        if job_daten['results']
+        if job_daten['results']:
             st.write(f"Gefundene Jobs in {region} für {job_title}:")
-            for jobs in job_daten['results']
+            for jobs in job_daten['results']:
                 title = job.get('title', 'Kein Titel verfügbar')
                 company = job.get('company', {}).get('display_name', 'Unbekannt')
                 location = job.get('location', {}).get('area', 'Unbekannt')
@@ -104,5 +97,7 @@ def main():
     datenabfrage()
     job_title = st.text_input("Welchen Job willst du?")
     region = st.text_input("Region")
+    
+    if job_title and region:
     job_suchen(job_title, region)
 
