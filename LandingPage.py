@@ -21,7 +21,7 @@ elif st.session_state.button == True: #Neu
     st.session_state.button = False
 
 
-menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
+
 st.title("Job Fit App")
 st.subheader("Wilkommen zu deinem persönlichen Job Matcher")
 st.divider()
