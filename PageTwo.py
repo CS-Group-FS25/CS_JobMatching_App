@@ -2,6 +2,10 @@ import streamlit as st
 import requests
 
 def main()
+    # Adzuna API Einrichten mit API ID und Schlüssel
+    APP_ID = "42d55acf"
+    APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
+
     st.title("🔍 Klassische Jobsuche")
     st.markdown("Suche nach aktuellen Stellenanzeigen in Deutschland.")
 
