@@ -17,7 +17,7 @@ def datenabfrage():
 
     ### Willkommen + Abfrage der Daten 
     st.title("Dein Persönlicher Job-Matcher")
-    st.title("Kreiere zuerst dein persöonliches Profil")
+    st.header("Kreiere zuerst dein persöonliches Profil")
     
     Alter = st.text_input("Bitte gebe dein Alter ein")
     Ort = st.text_input("In welcher Region suchst du nach einem Job?")
@@ -42,8 +42,8 @@ def datenabfrage():
     )
 
     ### Profil anzeigen unterhalb der Eingabefelder
-    st.expander("Profil anzeigen")
-    st.markdown(f"""
+    with st.expander("Profil anzeigen"):
+        st.markdown(f"""
         **Alter:** {profil.alter}
         **Ort:** {profil.ort}
         **Branche:** {profil.branche}
@@ -52,12 +52,13 @@ def datenabfrage():
         **Berufserfahrung:** {profil.berufserfahrung}
         **Arbeitszeit:** {profil.arbeitszeit}
         """)
+    return profil
 
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 
-def job_suchen(job_title, profil.ort):
+def job_suchen(job_title, profil):
     url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'  # Adzuna API für deutschland
 
     # Notwendige Eingaben für die Suche
@@ -97,7 +98,12 @@ def job_suchen(job_title, profil.ort):
 def main():
     datenabfrage()
     job_title = st.text_input("🔧 Stichwort (z. B. Python Entwickler)", "python")
-    job_suchen(job_title,profil.ort)
+    if st.button("Job suchen"):
+        if job_title:
+            job_suchen(job_title,profil)
+        else:
+            st.warning("Kein Jobtitel")    
+        
     
     
 
