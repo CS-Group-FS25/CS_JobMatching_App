@@ -45,15 +45,15 @@ if st.session_state.page == 'Startseite':
     with col1:
         if st.button('JobMatcher'):
             st.session_state.page = 'page_one'
-            st.experimental_rerun()
+            st.rerun()
     with col2:
         if st.button('Klassische Job-Suche'):
             st.session_state.page = 'page_two'
-            st.experimental_rerun()
+            st.rerun()
     with col3:
         if st.button('Gehaltsfinder'):
             st.session_state.page = 'page_three'
-            st.experimental_rerun()
+            st.rerun()
 
 # Je nach gewählter Seite nur die jeweilige Seite anzeigen
 if st.session_state.page == 'page_one':
