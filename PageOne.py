@@ -58,31 +58,40 @@ APP_ID = "42d55acf"
 APP_KEY = "27ac7bac51f538681d1cf3fe57d8ae3e"
 
 ### Jobsuche über Adzuna als Funktion definieren
-def job_suchen():
-    url= f'https://api.adzuna.com/v1/jobs/ch/search/1' ### Adzuna API für die Schweiz
+import streamlit as st
+import requests
 
-    ### Notwendige Eingaben für die Suche
+# Adzuna API Einrichten mit API ID und Schlüssel
+APP_ID = "42d55acf"
+APP_KEY = "27ac7bac51f538681d1cf3fe57d8ae3e"
+
+def job_suchen(job_title, region):
+    url = f'https://api.adzuna.com/v1/jobs/ch/search/1'  # Adzuna API für die Schweiz
+
+    # Notwendige Eingaben für die Suche
     parameter = {
-        'app_id' : APP_ID,
-        'app_key' : APP_KEY,
-        'Job' : job_title, ### Jobtitel den wir durch ML filter
-        'Region' : region ### Region in der gesucht wird
+        'app_id': APP_ID,
+        'app_key': APP_KEY,
+        'title': job_title,  # Jobtitel (richtig benannt)
+        'location': region   # Region (richtig benannt)
     }
-    ### Adzuna API anfragen über request
+
+    # Adzuna API anfragen über requests
     response = requests.get(url, params=parameter)
-    
-    ### Check ob Anfrage funktioniert hat
+
+    # Überprüfen, ob die Anfrage erfolgreich war
     if response.status_code == 200:
         job_daten = response.json()
-        
+
+        # Überprüfen, ob Ergebnisse vorhanden sind
         if job_daten['results']:
             st.write(f"Gefundene Jobs in {region} für {job_title}:")
-            for jobs in job_daten['results']:
+            for job in job_daten['results']:  # Ändere 'jobs' zu 'job'
                 title = job.get('title', 'Kein Titel verfügbar')
                 company = job.get('company', {}).get('display_name', 'Unbekannt')
                 location = job.get('location', {}).get('area', 'Unbekannt')
                 url = job.get('redirect_url', '#')
-                
+
                 st.write(f"- **{title}** bei {company}, {location}")
                 st.write(f"[Details anzeigen]({url})")
                 st.write("\n")
