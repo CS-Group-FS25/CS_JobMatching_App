@@ -9,6 +9,15 @@ if "seite" not in st.session_state:
 # Initialisierung von session_state.button, wir abgefragt ob ein button geclickt wurde
 if "button" not in st.session_state: 
     st.session_state.button = False
+    
+#Falls kein button geclickt, st.sesison_state.seite auf die Auswahl der sidebar überschrieben werden
+if st.session_state.button == False:
+    st. session_state.seite = auswahl
+
+#Falls button geclickt, st.session_state.seite nicht überschrieben werden
+#Danach soll der st.session_state.button wieder auf False ändern damit man beim nächsten reload nicht stuck ist
+elif st.session_state.button == True: #Neu
+    st.session_state.button = False
 
 
 menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
