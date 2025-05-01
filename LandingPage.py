@@ -41,7 +41,7 @@ if 'page' not in st.session_state:
 if st.session_state.page == 'Startseite':
     
 
-    left, col1, col2, col3, right = st.columns([0.5, 1, 1, 1, 0.5])
+    left, col1, col2, col3, right = st.columns([0.5, 1, 1, 2, 0.5])
     with col1:
         if st.button('JobMatcher'):
             st.session_state.page = 'page_one'
