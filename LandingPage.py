@@ -10,6 +10,15 @@ menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-S
 st.title("Job Fit App")
 st.subheader("Wilkommen zu deinem persönlichen Job Matcher")
 st.divider()
+if menü == "Job Matcher": 
+    import PageOne
+    PageOne.main() 
+if menü == "Klassische Job-Suche":
+    import PageTwo
+    PageTwo.main()
+elif menü == "Gehaltsfinder":
+    import PageThree
+    PageThree.main()
 
 st.markdown(
     """ 
@@ -23,23 +32,31 @@ st.markdown(
     """
 )
 
-# Setze default-Seite
+
+# Seite merken
 if 'page' not in st.session_state:
     st.session_state.page = 'home'
 
-# Navigation Buttons
-col1, col2, col3 = st.columns(3)
-with col1:
-    if st.button('JobMatcher'):
-        st.session_state.page = 'page_one'
-with col2:
-    if st.button('Klassische Job-Suche'):
-        st.session_state.page = 'page_two'
-with col3:
-    if st.button('Gehaltsfinder'):
-        st.session_state.page = 'page_three'
+# Wenn auf der Startseite: Buttons anzeigen
+if st.session_state.page == 'home':
+    st.title("Willkommen 👋")
+    st.write("Wähle eine Funktion aus:")
 
-# Seiten anzeigen
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button('JobMatcher'):
+            st.session_state.page = 'page_one'
+            st.experimental_rerun()
+    with col2:
+        if st.button('Klassische Job-Suche'):
+            st.session_state.page = 'page_two'
+            st.experimental_rerun()
+    with col3:
+        if st.button('Gehaltsfinder'):
+            st.session_state.page = 'page_three'
+            st.experimental_rerun()
+
+# Je nach gewählter Seite nur die jeweilige Seite anzeigen
 if st.session_state.page == 'page_one':
     import PageOne
     PageOne.main()
@@ -51,12 +68,4 @@ elif st.session_state.page == 'page_three':
     PageThree.main()
 
 
-if menü == "Job Matcher": 
-    import PageOne
-    PageOne.main() 
-if menü == "Klassische Job-Suche":
-    import PageTwo
-    PageTwo.main()
-elif menü == "Gehaltsfinder":
-    import PageThree
-    PageThree.main()
+
