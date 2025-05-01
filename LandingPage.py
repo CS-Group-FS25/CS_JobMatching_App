@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd 
 import numpy as np
 
-st.set_page_config(page_title="Job Fit Aplication", page_icon=":briefcase:", layout="wide")
+st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
 if "seite" not in st.session_state:
     st.session_state.seite = "Startseite"
