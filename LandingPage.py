@@ -11,11 +11,7 @@ if "seite" not in st.session_state:
 if "button" not in st.session_state: 
     st.session_state.button = False
 
-selected = option_menu(
-    menu_title=None, 
-    options=["Startseite", "JobMatcher", "Klassische Jobsuche", "Gehaltsfinder", "Über uns"]
-    orientation="horizontal"
-)
+
 st.write(f"Ausgewählt: {selected}")
 
 menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
