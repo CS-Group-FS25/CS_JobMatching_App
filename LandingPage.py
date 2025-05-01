@@ -6,7 +6,7 @@ import requests
 st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
 
-menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
+menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "Über uns"))
 st.title("Job Fit App")
 st.subheader("Wilkommen zu deinem persönlichen Job Matcher")
 st.divider()
