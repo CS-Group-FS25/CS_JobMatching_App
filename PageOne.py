@@ -96,7 +96,7 @@ def job_suchen(job_title, profil):
     
 # Aufbau der Jobsuche 
 def main():
-    datenabfrage()
+    profil = datenabfrage()
     job_title = st.text_input("🔧 Stichwort (z. B. Python Entwickler)", "python")
     if st.button("Job suchen"):
         if job_title:
