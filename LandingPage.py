@@ -11,8 +11,8 @@ if "button" not in st.session_state:
     st.session_state.button = False
 
 menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
-st.title("Job Fit Application")
-st.subheader("Wilkommen zu deinem personal Job Matcher")
+st.title("Job Fit App")
+st.subheader("Wilkommen zu deinem persönlichen Job Matcher")
 st.divider()
 
 st.markdown(
