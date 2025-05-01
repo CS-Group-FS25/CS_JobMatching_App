@@ -2,10 +2,8 @@ import streamlit as st
 import pandas as pd
 import requests
 
-def datenabfrage(): 
-    ### Benutzerprofil Klasse erstellen
-
-    class Benutzerprofil: 
+### Benutzprofil als Klasse definieren
+class Benutzerprofil: 
         def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit):
             self.alter = alter
             self.ort = ort
@@ -15,6 +13,8 @@ def datenabfrage():
             self.berufserfahrung = berufserfahrung
             self.arbeitszeit = arbeitszeit
 
+
+def datenabfrage(): 
     ### Willkommen + Abfrage der Daten 
     st.title("Dein Persönlicher Job-Matcher")
     st.header("Kreiere zuerst dein persöonliches Profil")
