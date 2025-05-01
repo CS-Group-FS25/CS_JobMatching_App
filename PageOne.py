@@ -58,7 +58,7 @@ APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 
 def job_suchen(job_title, region):
-    url = f'https://api.adzuna.com/v1/jobs/gb/search/1'  # Adzuna API für deutschland
+    url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'  # Adzuna API für deutschland
 
     # Notwendige Eingaben für die Suche
     parameter = {
@@ -103,7 +103,7 @@ def main():
     job_title = st.text_input("🔧 Stichwort (z. B. Python Entwickler)", "python")
     location = st.text_input("📍 Ort (z. B. Berlin)", "Berlin")
     results_per_page = st.slider("📄 Anzahl der Ergebnisse", min_value=1, max_value=20, value=5)
-    url = f'https://api.adzuna.com/v1/api/jobs/gb/search/1'
+    url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
     # Button zum Auslösen der Suche
     if st.button("🔎 Jobs suchen"):
         with st.spinner("Suche läuft..."):
