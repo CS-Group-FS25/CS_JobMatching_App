@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 
 st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
+menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
 
 if "seite" not in st.session_state:
     st.session_state.seite = "Startseite"
@@ -12,7 +13,7 @@ if "button" not in st.session_state:
     
 #Falls kein button geclickt, st.sesison_state.seite auf die Auswahl der sidebar überschrieben werden
 if st.session_state.button == False:
-    st. session_state.seite = auswahl
+    st. session_state.seite = menü
 
 #Falls button geclickt, st.session_state.seite nicht überschrieben werden
 #Danach soll der st.session_state.button wieder auf False ändern damit man beim nächsten reload nicht stuck ist
