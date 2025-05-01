@@ -58,7 +58,6 @@ def main():
                     st.write("📍 Ort:", job.get("location", {}).get("display_name", ""))
                     st.write(job.get("description", "")[:300] + "...")
                     st.markdown(f"[🔗 Zum Job]({job.get('redirect_url')})")
-                    st.markdown("---")
                     lat = job.get("location", {}).get("latitude")
                     lon = job.get("location", {}).get("longitude")
                     # Rückwärtssuche nach Adresse
