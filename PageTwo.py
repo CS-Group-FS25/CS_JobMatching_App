@@ -6,6 +6,8 @@ def main():
     APP_ID = "42d55acf"
     APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
     # 🔁 Funktion für Reverse-Geocoding (OpenStreetMap / Nominatim)
+    
+    ### Versuch Adresse zu lokalisieren
     def reverse_geocode(lat, lon):
         try:
             url = "https://nominatim.openstreetmap.org/reverse"
@@ -59,7 +61,6 @@ def main():
                     st.markdown("---")
                     lat = job.get("location", {}).get("latitude")
                     lon = job.get("location", {}).get("longitude")
-
                     # Rückwärtssuche nach Adresse
                     if lat and lon:
                         address = reverse_geocode(lat, lon)
