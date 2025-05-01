@@ -104,12 +104,13 @@ def job_suchen(job_title, region):
 # Aufbau der Jobsuche 
 def main():
     datenabfrage()
-    
     job_title = st.text_input("Welchen Job willst du?")
     region = st.text_input("Region")
-    
-    if job_title and region:
-        job_suchen(job_title, region)
-    else:
-        st.warning("bitte gib sowohl einen titel als auch eine Region ein")
 
+    # Überprüfen, ob der Jobtitel und die Region ausgefüllt wurden
+    if job_title and region:
+        job_suchen(job_title, region)  # Übergibt die Werte an job_suchen
+    else:
+        st.warning("Bitte gib sowohl einen Jobtitel als auch eine Region ein.")  # Falls Inputs fehlen
+
+    
