@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd 
 import numpy as np
-from streamlit_option_menu import option_menu
 
 st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
