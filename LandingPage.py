@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd 
 import numpy as np
+from streamlit_option_menu import option_menu
 
 st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
@@ -9,6 +10,13 @@ if "seite" not in st.session_state:
 # Initialisierung von session_state.button, wir abgefragt ob ein button geclickt wurde
 if "button" not in st.session_state: 
     st.session_state.button = False
+
+selected = option_menu(
+    menu_title=None, 
+    options=["Startseite", "JobMatcher", "Klassische Jobsuche", "Gehaltsfinder", "Über uns"]
+    orientation="horizontal"
+)
+st.write(f"Ausgewählt: {selected}")
 
 menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
 st.title("Job Fit App")
