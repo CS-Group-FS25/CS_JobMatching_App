@@ -1,7 +1,5 @@
 import streamlit as st 
 import pandas as pd
- 
-import streamlit as st
 import requests
 
 def datenabfrage(): 
@@ -36,6 +34,7 @@ def datenabfrage():
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))    
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("Keine Erfahrung", "0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
     Arbeitszeit = st.selectbox("Wie viel Zeit kannst du investieren?", ("Vollzeit", "Teilzeit", "Minijob"))
+    Softskills = st.selectbox
 
 
     ### aktuelles Profil speichern
@@ -61,54 +60,49 @@ def datenabfrage():
         **Arbeitszeit:** {profil.arbeitszeit}
         """)
 
+# Adzuna API Einrichten mit API ID und Schlüssel
+APP_ID = "42d55acf"
+APP_KEY = "27ac7bac51f538681d1cf3fe57d8ae3e"
 
-# BA API Konfiguration
-API_URL_BA = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
-API_KEY_BA = "jobboerse-jobsuche"  # Öffentlicher Key
+### Jobsuche über Adzuna als Funktion definieren
+def job_suchen():
+    url= f'https://api.adzuna.com/v1/jobs/ch/search/1' ### Adzuna API für die Schweiz
 
-# Jobsuche-Funktion bei der BA
-def suche_jobs_BA(beruf, ort, anzahl=10):
-    headers = {
-        "X-API-Key": API_KEY_BA # Öffentlicher Key
+    ### Notwendige Eingaben für die Suche
+    parameter = {
+        'app_id' : APP_ID,
+        'app_key' : APP_KEY,
+        'Job' : job_title, ### Jobtitel den wir durch ML filter
+        'Region' : region ### Region in der gesucht wird
     }
-    #Suchparameter
-    params = {
-        "was": beruf,
-        "wo": ort,
-        "size": anzahl
-    }
-    #API Anfrage
-    response = requests.get(API_URL_BA, headers=headers, params=params)
+    ### Adzuna API anfragen über request
+    response = request.get(url, parameter=parameter)
+    
+    ### Check ob Anfrage funktioniert hat
     if response.status_code == 200:
-        return response.json().get("stellenangebote", []) # Wiedergabe der Stellenangebote
+        job_daten = response.json()
+        
+        if job_daten['results']
+            st.write(f"Gefundene Jobs in {region} für {job_title}:")
+            for jobs in job_daten['results']
+                title = job.get('title', 'Kein Titel verfügbar')
+                company = job.get('company', {}).get('display_name', 'Unbekannt')
+                location = job.get('location', {}).get('area', 'Unbekannt')
+                url = job.get('redirect_url', '#')
+                
+                st.write(f"- **{title}** bei {company}, {location}")
+                st.write(f"[Details anzeigen]({url})")
+                st.write("\n")
+        else:
+            st.write(f"Keine Jobs für {job_title} in {region} gefunden.")
     else:
-        st.error(f"Fehler bei der API-Anfrage: {response.status_code}")
-        return []
+        st.write(f"Fehler bei der API-Anfrage: {response.status_code}")
 
+    
 # Aufbau der Jobsuche 
 def main():
     datenabfrage()
-    st.title("💼 Job-Suche mit der Bundesagentur für Arbeit")
-    st.write("Nutze diese Suche, um passende Jobs in deiner Region zu finden.")
-
-    beruf = st.text_input("Beruf / Stichwort", "Softwareentwickler")
-    ort = st.text_input("Ort", "Berlin")
-    anzahl = st.slider("Anzahl der Ergebnisse", 1, 50, 10)
-
-    if st.button("🔍 Suche starten"):
-        with st.spinner("Lade Ergebnisse..."):
-            jobs = suche_jobs_BA(beruf, ort, anzahl)
-
-        if jobs:
-            st.success(f"{len(jobs)} Stellen gefunden:")
-            for job in jobs:
-                st.subheader(job.get("titel", "Kein Titel"))
-                st.write(f"📍 {job.get('arbeitsort', {}).get('ort', 'Unbekannt')}")
-                st.write(f"🗓️ Veröffentlicht: {job.get('veroeffentlichtAm', 'k.A.')}")
-                link = job.get("stellenURL")
-                if link:
-                    st.markdown(f"[Zur Stellenanzeige]({link})", unsafe_allow_html=True)
-                st.markdown("---")
-        else:
-            st.info("Keine Stellen gefunden. Bitte versuche andere Suchbegriffe.")
+    job_title = st.text_input("Welchen Job willst du?")
+    region = st.text_input("Region")
+    job_suchen(job_title, region)
 
