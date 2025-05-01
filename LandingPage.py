@@ -35,10 +35,10 @@ st.markdown(
 
 # Seite merken
 if 'page' not in st.session_state:
-    st.session_state.page = 'home'
+    st.session_state.page = 'Startseite'
 
 # Wenn auf der Startseite: Buttons anzeigen
-if st.session_state.page == 'home':
+if st.session_state.page == 'Startseite':
     
 
     col1, col2, col3 = st.columns(3)
