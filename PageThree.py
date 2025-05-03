@@ -7,7 +7,7 @@ import statistics
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
-url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
+url = f'https://api.adzuna.com/v1/api/jobs/de/search/1'
 
 
 def Gehaltssuche():
@@ -20,6 +20,8 @@ def Gehaltssuche():
     Ort = st.text_input("In welcher Region suchst du?")
     
     if st.button("Gehalt anzeigen"):
+        url = 'https://api.adzuna.com/v1/api/jobs/de/search/1'
+       
         parameter = {
             'app_id' : APP_ID,
             'app_key': APP_KEY,
@@ -27,9 +29,7 @@ def Gehaltssuche():
             'where': Ort
         }
         
-        if Ort:
-            parameter['where'] = Ort
-        url = 'https://api.adzuna.com/v1/api/jobs/ch/search/1'
+    
         response = requests.get(url, params=parameter)
             
         if response.status_code == 200:
@@ -41,7 +41,6 @@ def Gehaltssuche():
                 st.metric("Durchschnittsgehalt", f"{int(statistics.mean(gehaelter)):,} CHF")
                 st.metric("Minimum", f"{int(min(gehaelter)):,} CHF")
                 st.metric("Maximum", f"{int(max(gehaelter)):,} CHF")
-
                 st.bar_chart(gehaelter)
             else:
                 st.warning("Keine Gehaltsdaten gefunden.")
