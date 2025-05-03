@@ -4,12 +4,13 @@ import requests
 
 ### Benutzprofil als Klasse definieren
 class Benutzerprofil: 
-        def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit):
+        def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, ausbildungsstand, berufserfahrung, arbeitszeit):
             self.alter = alter
             self.ort = ort
             self.branche = branche
             self.abschluss = abschluss
             self.akademisches_niveau = akademisches_niveau
+            self.ausbildungsstand = ausbildungsstand
             self.berufserfahrung = berufserfahrung
             self.arbeitszeit = arbeitszeit
 
@@ -41,6 +42,7 @@ def datenabfrage():
         branche=Branche,
         abschluss=Bildungsabschluss,
         akademisches_niveau=Akademisches_Niveau,
+        ausbildungsstand=Ausbildungsstand
         berufserfahrung=Berufserfahrung,
         arbeitszeit=Arbeitszeit   
     )
