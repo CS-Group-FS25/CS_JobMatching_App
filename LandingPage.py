@@ -8,7 +8,7 @@ def main():
 
     ### session_state
     if 'page' not in st.session_state:
-    st.session_state.page = 'Startseite'
+        st.session_state.page = 'Startseite'
 
     menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "Über uns"))
 
@@ -32,9 +32,9 @@ def main():
         )
         col1, col2, col3 = st.columns([ 1, 1, 1 ])
         with col1:
-        if st.button('JobMatcher'):
-            st.session_state.page = "Job Matcher"
-            st.experimentel_rerun()
+            if st.button('JobMatcher'):
+                st.session_state.page = "Job Matcher"
+                st.experimentel_rerun()
         with col2:
             if st.button('Klassische Job-Suche'):
                 st.session_state.page = "Klassische Job-Suche"
