@@ -37,7 +37,8 @@ if st.session_state.page == "Startseite":
     with col2:
         if st.button('Klassische Job-Suche'):
             st.session_state.page = "Klassische Job-Suche"
-            st.experimental_rerun()
+            import PageTwo
+            PageTwo.main()
     with col3:
         if st.button('Gehaltsfinder'):
             st.session_state.page = "Gehaltsfinder"
