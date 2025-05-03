@@ -17,12 +17,13 @@ class Benutzerprofil:
 def datenabfrage(): 
     ### Willkommen + Abfrage der Daten 
     st.title("Dein Persönlicher Job-Matcher")
-    st.header("Kreiere zuerst dein persöonliches Profil")
+    st.header("Kreiere zuerst dein persönliches Profil")
     
     Alter = st.text_input("Bitte gebe dein Alter ein")
     Ort = st.text_input("In welcher Region suchst du nach einem Job?")
-    Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)", ["Finanzen", "Software", "Vertrieb","Beratung", "Soziales", "Lehrer", "Baubranche", "Verwaltung"
-                                                                       "Logistik", "Handel", "Industrie", "Pharma", "Dienstleistungen"])
+    Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)", ["Finanzen", "Software", "Vertrieb","Beratung", 
+                                                                                            "Soziales", "Lehrer", "Baubranche", "Verwaltung",
+                                                                                            "Logistik", "Handel", "Industrie", "Pharma", "Dienstleistungen"])
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))    
