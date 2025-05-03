@@ -1,15 +1,16 @@
 import streamlit as st
 import numpy as np
 import requests
+import statistics
 
 
 # Adzuna API Einrichten mit API ID und Schlüssel
-    APP_ID = "42d55acf"
-    APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
-    url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
+APP_ID = "42d55acf"
+APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
+url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 
-def Gehaltssuche(job, ):
+def Gehaltssuche():
     st.title("Gehaltssuche nach Branche")
     ### Auswahl der Branche nach deren Gehalt man sucht (nur eine Branche wählbar)
     branche = st.selectbox("Wähle die Branche nach welcher du suchst?",
@@ -18,7 +19,7 @@ def Gehaltssuche(job, ):
                            )
     Ort = st.text_input("In welcher Region suchst du?")
     
-    if st.button("Gehalt anzeigen")
+    if st.button("Gehalt anzeigen"):
         parameter = {
             'app_id' : APP_ID,
             'app_key': APP_KEY,
@@ -27,7 +28,7 @@ def Gehaltssuche(job, ):
             'salary_include_unknown' : 0
         }
         
-        if ort:
+        if Ort:
             parameter['where'] = Ort
         
         response = requests.get(url, params=parameter)
