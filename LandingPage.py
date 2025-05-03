@@ -34,7 +34,8 @@ def main():
         with col1:
             if st.button('JobMatcher'):
                 st.session_state.page = "Job Matcher"
-                st.experimentel_rerun()
+                import PageOne
+                PageOne.main()
         with col2:
             if st.button('Klassische Job-Suche'):
                 st.session_state.page = "Klassische Job-Suche"
@@ -43,7 +44,8 @@ def main():
         with col3:
             if st.button('Gehaltsfinder'):
                 st.session_state.page = "Gehaltsfinder"
-                st.experimental_rerun()
+                import PageThree
+                PageThree.main()
         
         
         
