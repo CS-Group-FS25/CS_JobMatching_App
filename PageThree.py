@@ -27,6 +27,9 @@ def Gehaltssuche():
             'app_key': APP_KEY,
             'what' : branche, 
             'where': Ort
+            'results_per_page' : 25,
+            'salary_include_unknown': 0,  # Nur Jobs mit Gehaltsangabe
+            'content-type': 'application/json'
         }
         
     
