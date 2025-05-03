@@ -24,7 +24,7 @@ def datenabfrage():
     Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)", ["Finanzen", "Software", "Vertrieb","Beratung", 
                                                                                             "Soziales", "Lehrer", "Baubranche", "Verwaltung",
                                                                                             "Logistik", "Handel", "Industrie", "Pharma", "Dienstleistungen"])
-    Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
+    Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", options=("Ja", "Nein"), horizontal=True)
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("Keine Erfahrung", "0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
