@@ -24,8 +24,7 @@ def Gehaltssuche():
             'app_id' : APP_ID,
             'app_key': APP_KEY,
             'what' : branche, 
-            'results per page' : 20,
-            'content-type' : 'application/json'
+            'where': Ort
         }
         
         if Ort:
