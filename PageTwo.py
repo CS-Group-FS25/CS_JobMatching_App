@@ -32,7 +32,7 @@ def main():
     st.markdown("Suche nach aktuellen Stellenanzeigen in der Schweiz.")
 
     # Eingabefelder
-    job_title = st.text_input("🔧 Stichwort (z. B. Python Entwickler)", "python")
+    job_title = st.text_input("🔧 Stichwort (z. B. Finanzen)", "Finanzen")
     location = st.text_input("📍 Ort (z. B. Zürich)", "Zürich")
     results_per_page = st.slider("📄 Anzahl der Ergebnisse", min_value=1, max_value=20, value=5)
     url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
