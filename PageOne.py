@@ -13,7 +13,7 @@ class Benutzerprofil:
             self.berufserfahrung = berufserfahrung
             self.arbeitszeit = arbeitszeit
 
-
+### Funktion der Profilerstellung und der Datenabfrage 
 def datenabfrage(): 
     ### Willkommen + Abfrage der Daten 
     st.title("Dein Persönlicher Job-Matcher")
@@ -26,7 +26,10 @@ def datenabfrage():
                                                                                             "Logistik", "Handel", "Industrie", "Pharma", "Dienstleistungen"])
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
     if Bildungsabschluss == "Ja":
-        Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))    
+        Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))
+    else:
+        Ausbildungsstand= st.selectbox("Befinden Sie sich noch in der Ausbildung", ("Schule", "Studium", "Weiterbildung"))
+                
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("Keine Erfahrung", "0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
     Arbeitszeit = st.selectbox("Wie viel Zeit kannst du investieren?", ("Vollzeit", "Teilzeit", "Minijob"))
 
@@ -77,7 +80,7 @@ def job_suchen(job_title, profil):
     if response.status_code == 200:
         job_daten = response.json()
 
-        # Überprüfen, ob Ergebnisse vorhanden sind
+        ### Überprüfen, ob Jobs gefunden werden
         if job_daten['results']:
             st.write(f"Gefundene Jobs in {profil.ort} für {job_title}:")
             for job in job_daten['results']:  # Ändere 'jobs' zu 'job'
