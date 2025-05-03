@@ -30,7 +30,7 @@ def Gehaltssuche():
         
         if Ort:
             parameter['where'] = Ort
-        url = 'https://api.adzuna.com/v1/api/jobs/ch/search/1'
+        url = 'https://api.adzuna.com/v1/api/jobs/de/search/1'
         response = requests.get(url, params=parameter)
             
         if response.status_code == 200:
