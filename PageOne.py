@@ -10,7 +10,6 @@ class Benutzerprofil:
             self.branche = branche
             self.abschluss = abschluss
             self.akademisches_niveau = akademisches_niveau
-            self.ausbildungsstand = ausbildungsstand
             self.berufserfahrung = berufserfahrung
             self.arbeitszeit = arbeitszeit
 
@@ -28,8 +27,6 @@ def datenabfrage():
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", ("Ja", "Nein"))
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium", ))
-    elif Bildungsabschluss == "Nein":
-        Ausbildungsstand= st.selectbox("Befinden Sie sich noch in der Ausbildung", ("Schule", "Studium", "Weiterbildung"))
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?", ("Keine Erfahrung", "0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
     Arbeitszeit = st.selectbox("Wie viel Zeit kannst du investieren?", ("Vollzeit", "Teilzeit", "Minijob"))
 
@@ -41,7 +38,6 @@ def datenabfrage():
         branche=Branche,
         abschluss=Bildungsabschluss,
         akademisches_niveau=Akademisches_Niveau,
-        ausbildungsstand=Ausbildungsstand
         berufserfahrung=Berufserfahrung,
         arbeitszeit=Arbeitszeit   
     )
