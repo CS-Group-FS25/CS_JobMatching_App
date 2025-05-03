@@ -57,9 +57,9 @@ elif st.session_state.page == "Klassische Job-Suche":
 elif st.session_state.page == "Gehaltsfinder":
     import PageThree
     PageThree.main()
-elif st.session_state.page == "Über Uns"
+elif st.session_state.page == "Über Uns":
     import PageFour
-    Pagefour.main()
+    PageFour.main()
 
 
 
