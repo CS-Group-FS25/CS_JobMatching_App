@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import requests
 
-def main()
+def main():
     st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
     ### session_state
