@@ -74,7 +74,9 @@ def main():
     if st.button("Zurück zur Startseite"):
         st.session_state.seite = "Startseite"
         st.session_state.button = True
-        st.rerun()
+        import LandingPage
+        LandingPage.main()
+        
         
     
 
