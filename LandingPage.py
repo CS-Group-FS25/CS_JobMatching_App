@@ -32,16 +32,16 @@ if st.session_state.page == "Startseite":
     col1, col2, col3 = st.columns([ 1, 1, 1 ])
     with col1:
         if st.button('JobMatcher'):
-            st.session_state.page = 'page_one'
-            st.rerun()
+            st.session_state.page = "Job Matcher"
+            st.experimentel_rerun()
     with col2:
         if st.button('Klassische Job-Suche'):
-            st.session_state.page = 'page_two'
-            st.rerun()
+            st.session_state.page = "Klassische Job-Suche"
+            st.experimental_rerun()
     with col3:
         if st.button('Gehaltsfinder'):
-            st.session_state.page = 'page_three'
-            st.rerun()
+            st.session_state.page = "Gehaltsfinder"
+            st.experimental_rerun()
     
     
     
