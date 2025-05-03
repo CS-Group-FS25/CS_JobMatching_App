@@ -29,7 +29,6 @@ def Gehaltssuche():
             'where': Ort,
             'results_per_page': 25,
             'salary_include_unknown': 0,  # Nur Jobs mit Gehaltsangabe
-            'sort_by' : "date"
             'content-type': 'application/json'
         }
         
