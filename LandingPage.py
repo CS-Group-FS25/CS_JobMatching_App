@@ -5,22 +5,20 @@ import requests
 
 st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
+### session_state
+if 'page' not in st.session_state:
+    st.session_state.page = 'Startseite'
 
 menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "Über uns"))
-st.title("Job Fit App")
-st.subheader("Wilkommen zu deinem persönlichen Job Matcher")
-st.divider()
-if menü == "Job Matcher": 
-    import PageOne
-    PageOne.main() 
-if menü == "Klassische Job-Suche":
-    import PageTwo
-    PageTwo.main()
-elif menü == "Gehaltsfinder":
-    import PageThree
-    PageThree.main()
 
-st.markdown(
+if menü != "Startseite":
+    st.session_state.page = menü
+
+if st.session_state.page == "Startseite":    
+    st.title("Job Fit App")
+    st.subheader("Wilkommen zu deinem persönlichen Job Matcher")
+    st.divider()
+    st.markdown(
     """ 
     ## Intro
     Diese App ist eine Job-Matching-Anwendung, die Ihnen hilft, den perfekten Job zu finden.
@@ -30,17 +28,7 @@ st.markdown(
     - [LinkedIn](https://business.linkedin.com/de-de/talent-solutions)
     - [Step Stone](https://www.stepstone.de/)
     """
-)
-
-
-# Seite merken
-if 'page' not in st.session_state:
-    st.session_state.page = 'Startseite'
-
-# Wenn auf der Startseite: Buttons anzeigen
-if st.session_state.page == 'Startseite':
-    
-
+    )
     col1, col2, col3 = st.columns([ 1, 1, 1 ])
     with col1:
         if st.button('JobMatcher'):
@@ -54,17 +42,31 @@ if st.session_state.page == 'Startseite':
         if st.button('Gehaltsfinder'):
             st.session_state.page = 'page_three'
             st.rerun()
-
-# Je nach gewählter Seite nur die jeweilige Seite anzeigen
-if st.session_state.page == 'page_one':
+    
+    
+    
+    
+    
+    
+elif st.session_state.page == "Job Matcher": 
     import PageOne
-    PageOne.main()
-elif st.session_state.page == 'page_two':
+    PageOne.main() 
+elif st.session_state.page == "Klassische Job-Suche":
     import PageTwo
     PageTwo.main()
-elif st.session_state.page == 'page_three':
+elif st.session_state.page == "Gehaltsfinder":
     import PageThree
     PageThree.main()
+elif st.session_state.page == "Über Uns"
+    import PageFour
+    Pagefour.main()
+
+
+
+
+   
+
+
 
 
 
