@@ -7,7 +7,7 @@ import statistics
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
-url = f'https://api.adzuna.com/v1/api/jobs/de/search/1'
+url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 
 def Gehaltssuche():
