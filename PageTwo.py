@@ -69,11 +69,14 @@ def main():
 
             else:
                 st.error(f"Fehler beim Abrufen der Daten: {response.status_code}")
+
+     if st.button("Zurück zur Startseite"):
+        st.session_state.seite = "Startseite"
+        st.session_state.button = True
+        st.rerun()
     
     
-    if st.button("Zurück zur Startseite"):
-        import LandingPage
-        LandingPage.main()
+    
         
         
     
