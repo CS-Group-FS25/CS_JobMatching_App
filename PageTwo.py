@@ -66,16 +66,9 @@ def main():
                     plz = get_postcode_from_coords_or_name(job)
                     st.write("📮 PLZ:", plz)
                     
-
             else:
                 st.error(f"Fehler beim Abrufen der Daten: {response.status_code}")
 
-     if st.button("Zurück zur Startseite"):
-        st.session_state.seite = "Startseite"
-        st.session_state.button = True
-        st.rerun()
-    
-    
     
         
         
