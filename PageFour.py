@@ -6,7 +6,7 @@ def main():
     
     st.markdown("Hallo")
     
-main()
+
     
 
     
