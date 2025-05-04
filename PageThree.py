@@ -13,11 +13,11 @@ url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 def Gehaltssuche():
     st.title("Gehaltssuche nach Branche")
     ### Auswahl der Branche nach deren Gehalt man sucht (nur eine Branche wählbar)
-    branche = st.selectbox("Wähle die Branche nach welcher du suchst?",
+    category = st.selectbox("Wähle die Branche nach welcher du suchst?",
                            ("Finanzen","IT & Software", "Vertrieb", 
                             "Kundendienst", "Ingenieur", "HR","Pflege")                           
                            )
-    Ort = st.text_input("In welcher Region suchst du?")
+    location = st.text_input("In welcher Region suchst du?")
     
     if st.button("Gehalt anzeigen"):
         url = 'https://api.intelligence.adzuna.com/api/v1.1/ch/reports/salary/'
@@ -25,10 +25,8 @@ def Gehaltssuche():
         parameter = {
             'app_id' : APP_ID,
             'app_key': APP_KEY,
-            'what' : branche, 
-            'where': Ort,
-            'results_per_page': 25,
-            'salary_include_unknown': 0,  # Nur Jobs mit Gehaltsangabe
+            'what' : category, 
+            'where': location,
             'content-type': 'application/json'
         }
         
