@@ -7,7 +7,7 @@ import statistics
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
-url = f'https://api.adzuna.com/v1/api/jobs/de/search/1'
+url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 
 def Gehaltssuche():
@@ -20,7 +20,7 @@ def Gehaltssuche():
     location = st.text_input("In welcher Region suchst du?")
     
     if st.button("Gehalt anzeigen"):
-        url = 'https://api.adzuna.com/v1/api/jobs/de/search/1'
+        url = 'https://api.adzuna.com/v1/api/jobs/ch/search/1'
        
         params = {
             "app_id": APP_ID,
@@ -35,9 +35,6 @@ def Gehaltssuche():
         
     
         response = requests.get(url, params=params)
-        st.json(response.json)
-        st.write(response.url)
-        st.write(response.text)
    
             
         if response.status_code == 200:
