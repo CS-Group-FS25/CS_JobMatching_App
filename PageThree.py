@@ -20,12 +20,12 @@ def Gehaltssuche():
     location = st.text_input("In welcher Region suchst du?")
     
     if st.button("Gehalt anzeigen"):
-        url = 'https://api.intelligence.adzuna.com/api/v1.1/ch/reports/salary/'
+        url = 'https://api.intelligence.adzuna.com/v1/api/jobs/ch/search/1'
        
         params = {
             "app_id": APP_ID,
             "app_key": APP_KEY,
-            "what": category
+            "what": category,
             "where": location,
             "results_per_page": 50,
             "salary_include_unknown": 0,
