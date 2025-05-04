@@ -30,7 +30,7 @@ def main():
         - [Step Stone](https://www.stepstone.de/)
         """
         )
-        col1, col2, col3 = st.columns([ 1, 1, 1 ])
+        col1, col2, col3 = st.columns(3)
         with col1:
             if st.button('JobMatcher'):
                 st.session_state.page = "Job Matcher"
@@ -48,10 +48,7 @@ def main():
                 PageThree.main()
         
         
-        
-        
-        
-        
+     #Menü Bedienung    
     elif st.session_state.page == "Job Matcher": 
         import PageOne
         PageOne.main() 
@@ -64,7 +61,7 @@ def main():
     elif st.session_state.page == "Über Uns":
         import PageFour
         PageFour.main()
-
+     
 main()
 
 
