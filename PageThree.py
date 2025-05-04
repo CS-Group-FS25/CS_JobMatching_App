@@ -29,6 +29,8 @@ def Gehaltssuche():
             "where": location,
             "results_per_page": 50,
             "salary_include_unknown": 0,
+            "salary_is_predicted": "1",
+            
         }
         
     
