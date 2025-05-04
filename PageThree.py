@@ -22,21 +22,27 @@ def Gehaltssuche():
     if st.button("Gehalt anzeigen"):
         url = 'https://api.intelligence.adzuna.com/api/v1.1/ch/reports/salary/'
        
-        parameter = {
-            'app_id' : APP_ID,
-            'app_key': APP_KEY,
-            'what' : category, 
-            'where': location,
-            'content-type': 'application/json'
+        params = {
+            "app_id": APP_ID,
+            "app_key": APP_KEY,
+            "what": jobtitel,
+            "where": ort,
+            "results_per_page": 50,
+            "salary_include_unknown": 0,
         }
         
     
-        response = requests.get(url, params=parameter)
+        response = requests.get(url, params=params)
             
         if response.status_code == 200:
             jobs = response.json().get('results', [])
-            gehaelter = [job['salary_avg'] for job in jobs if job.get('salary_avg')]
-
+            gehaelter = []
+            for job in jobs:
+                # Fallback wenn salary_avg nicht vorhanden ist
+                if job.get("salary_avg"):
+                    gehaelter.append(job["salary_avg"])
+                elif job.get("salary_min") and job.get("salary_max"):
+                    gehaelter.append((job["salary_min"] + job["salary_max"]) / 2)
             if gehaelter:
                 st.success(f"🔢 Gefundene Jobs mit Gehalt: {len(gehaelter)}")
                 st.metric("Durchschnittsgehalt", f"{int(statistics.mean(gehaelter)):,} CHF")
