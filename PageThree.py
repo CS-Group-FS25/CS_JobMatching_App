@@ -25,8 +25,8 @@ def Gehaltssuche():
         params = {
             "app_id": APP_ID,
             "app_key": APP_KEY,
-            "what": jobtitel,
-            "where": ort,
+            "what": category
+            "where": location,
             "results_per_page": 50,
             "salary_include_unknown": 0,
         }
