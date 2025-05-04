@@ -29,12 +29,13 @@ def Gehaltssuche():
             "where": location,
             "results_per_page": 50,
             "salary_include_unknown": 0,
-            "salary_is_predicted": "1",
+            
             
         }
         
     
         response = requests.get(url, params=params)
+        st.json(response.json)
         st.write(response.url)
         st.write(response.text)
    
