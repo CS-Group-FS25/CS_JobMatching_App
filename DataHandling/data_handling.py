@@ -12,6 +12,10 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
 
 skills_df = pd.read_csv("job_skills.csv", usecols=["job_link", "job_skills"])
 jobs_df = pd.read_csv("linkedin_job_postings.csv", usecols=["job_link", "job_title", "search_position"])
@@ -256,7 +260,7 @@ else:
 ### MACHINE LEARNING LOGIC
 
 v6_in_place = False
-if not os.path.exists("trained_random_forest.pkl") or v4_in_place == False:
+if not os.path.exists("trained_random_forest_with_industry.pkl") or v4_in_place == False:
     print("Training Model using Random Forest...")
     max_depth = 12     # depth of decision trees
     n_estimators = 75  # amount of decision trees
@@ -270,12 +274,21 @@ if not os.path.exists("trained_random_forest.pkl") or v4_in_place == False:
     merged_df = pd.merge(filtered_vectors_df, industry_df, on="cluster_id", how="left")
     merged_df.to_csv("FinalFileForML.csv")
 
-    x = merged_df.drop(columns=["cluster_id", "industry", "job_title", "example_titles"])
+    x = merged_df.drop(columns=["cluster_id", "industry", "job_title", "example_titles"], errors="ignore")
+    x = x.loc[:, ~x.columns.str.contains("Unnamed")]
     y = LabelEncoder().fit_transform(merged_df["cluster_id"])
 
 
-    one_hot = OneHotEncoder(sparse=False, handle_unknown='ignore')
+    one_hot = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
     industry_encoded = one_hot.fit_transform(merged_df[["industry"]])
+
+    print(type(industry_encoded))  # muss: <class 'numpy.ndarray'>
+    print(industry_encoded.dtype)  # muss: float64 oder int64
+    print(industry_encoded.shape)  # sollte (n_rows, n_industries) sein
+
+    print(x.dtypes)  # Alles sollte float oder int sein
+
+    print(x.columns)
 
     x_combined = np.hstack([x.values, industry_encoded])
 
@@ -296,11 +309,22 @@ if not os.path.exists("trained_random_forest.pkl") or v4_in_place == False:
     labels_predicted = set(y_pred)
     relevant_labels = list(labels_in_test & labels_predicted)
 
-    rfc_performance = classification_report(y_test, y_train, labels=relevant_labels)
+    rfc_performance = classification_report(y_test, y_pred, labels=relevant_labels)
     with open("rfc_performance_report.txt", "w") as f:  # Save performance report of trained model in txt file
         f.write(rfc_performance)
 
     joblib.dump((modelRFC, one_hot), "trained_random_forest_with_industry.pkl")
+
+    # Confusion Matrix
+    conf_mat = confusion_matrix(y_test, y_pred, labels=relevant_labels, normalize='true')
+    plt.figure(figsize=(12, 10))
+    sns.heatmap(conf_mat, annot=False, fmt='d', cmap='Blues')
+    plt.title("Confusion Matrix")
+    plt.xlabel("Predicted Labels")
+    plt.ylabel("True Labels")
+    plt.tight_layout()
+    plt.savefig("confusion_matrix.png")
+    plt.close()
 
     print("Training finished")
 else:
