@@ -3,11 +3,12 @@ import re
 import os
 from collections import Counter
 import ast
+import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import joblib
@@ -136,6 +137,7 @@ if not os.path.exists("matched_jobs_skills_with_skill_cluster.csv") or v1_in_pla
 else:
     print("Skills already in ", n_skill_clusters, " clusters.")
     matched_jobs_skills_with_skill_cluster_df = pd.read_csv("matched_jobs_skills_with_skill_cluster.csv")
+    df_clustered = pd.read_csv("clustered_skills.csv")
     v2_in_place = True
 
 print("Final shape of matched jobs and skills with cluster dataframe (should be: 1180925, 8):", matched_jobs_skills_with_skill_cluster_df.shape)
@@ -190,7 +192,7 @@ else:
 v5_in_place = False
 if not os.path.exists("cluster_industry_preview.csv"):
     print("Creating file to manually match industries to job clusters")
-    preview_jobs_per_cluster = (
+    job_clusters_with_industries_df = (
         matched_jobs_skills_with_job_cluster_df
         .groupby("job_title_clustered")["job_title_cleaned"]    # to group job titles by clusters
         .apply(lambda titles: titles.value_counts().head(5).index.tolist())    # take out top 5 job titles of each cluster
@@ -198,8 +200,8 @@ if not os.path.exists("cluster_industry_preview.csv"):
         .rename(columns={"job_title_clustered": "cluster_id", "job_title_cleaned": "example_titles"})
     )
 
-    preview_jobs_per_cluster["industry"] = ""
-    preview_jobs_per_cluster.to_csv("cluster_industry_preview.csv", index=False)
+    job_clusters_with_industries_df["industry"] = ""
+    job_clusters_with_industries_df.to_csv("cluster_industry_preview.csv", index=False)
     print("File created - Match the industries to the job clusters manually and then rerun the script")
     exit()
 elif not v4_in_place:
@@ -209,7 +211,7 @@ elif not v4_in_place:
         print("Process cancelled. Proceeding with current industry and potentially outdated job clusters")
     else:
         print("Creating file to manually match industries to job clusters")
-        preview_jobs_per_cluster = (
+        job_clusters_with_industries_df = (
             matched_jobs_skills_with_job_cluster_df
             .groupby("job_title_clustered")["job_title_cleaned"]  # to group job titles by clusters
             .apply(lambda titles: titles.value_counts().head(
@@ -218,17 +220,93 @@ elif not v4_in_place:
             .rename(columns={"job_title_clustered": "cluster_id", "job_title_cleaned": "example_titles"})
         )
 
-        preview_jobs_per_cluster["industry"] = ""
-        preview_jobs_per_cluster.to_csv("cluster_industry_preview.csv", index=False)
+        job_clusters_with_industries_df["industry"] = ""
+        job_clusters_with_industries_df.to_csv("cluster_industry_preview.csv", index=False)
         print("File created - Match the industries to the job clusters manually and then rerun the script")
         exit()
 else:
     print("Industries are matched to job clusters and up to date!")
     job_clusters_with_industries_df = pd.read_csv("cluster_industry_preview.csv", encoding="cp1252")
 
+### SKILL CLUSTER GROUPS - not relevant for ML but for skill selection in Streamlit
+
+if not os.path.exists("representative_skills_per_cluster.csv") or v2_in_place == False:
+    print("Creating File with representative Skills for each cluster")
+    df = df_clustered
+    matched_df = matched_jobs_skills_with_skill_cluster_df
+    matched_df["job_skills_cleaned"] = matched_df["job_skills_cleaned"].apply(eval)
+    all_skills = [skill for skill_list in matched_df["job_skills_cleaned"] for skill in skill_list]
+    skill_counts = Counter(all_skills)
+
+    df["count"] = df["skill"].map(skill_counts)
+
+    representative_skills = (
+        df.sort_values("count", ascending=False)
+        .groupby("cluster")
+        .head(5)  # Top 5 pro Gruppe
+        .reset_index(drop=True)
+    )
+
+    representative_skills.to_csv("representative_skills_per_cluster.csv", index=False)
+
+    print(representative_skills.head())
+else:
+    print("File with representative skill for each cluster already in place!")
+
 ### MACHINE LEARNING LOGIC
 
 v6_in_place = False
+if not os.path.exists("trained_random_forest.pkl") or v4_in_place == False:
+    print("Training Model using Random Forest...")
+    max_depth = 12     # depth of decision trees
+    n_estimators = 75  # amount of decision trees
+
+    industry_df = job_clusters_with_industries_df
+
+    filtered_df = matched_jobs_skills_with_job_cluster_df.dropna(subset=["job_title_clustered"]).copy()
+    filtered_vectors_df = skill_clusters_vectors_df.loc[filtered_df.index].reset_index(drop=True)
+    filtered_df = filtered_df.reset_index(drop=True)
+    filtered_vectors_df["cluster_id"] = filtered_df["job_title_clustered"]
+    merged_df = pd.merge(filtered_vectors_df, industry_df, on="cluster_id", how="left")
+    merged_df.to_csv("FinalFileForML.csv")
+
+    x = merged_df.drop(columns=["cluster_id", "industry", "job_title", "example_titles"])
+    y = LabelEncoder().fit_transform(merged_df["cluster_id"])
+
+
+    one_hot = OneHotEncoder(sparse=False, handle_unknown='ignore')
+    industry_encoded = one_hot.fit_transform(merged_df[["industry"]])
+
+    x_combined = np.hstack([x.values, industry_encoded])
+
+    x_train, x_test, y_train, y_test = train_test_split(x_combined, y, test_size=0.2, random_state=42)
+
+    modelRFC = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        n_jobs=-1,
+        verbose=1,
+        random_state=42
+    )
+    modelRFC.fit(x_train, y_train)
+
+    y_pred = modelRFC.predict(x_test)
+
+    labels_in_test = set(y_test)
+    labels_predicted = set(y_pred)
+    relevant_labels = list(labels_in_test & labels_predicted)
+
+    rfc_performance = classification_report(y_test, y_train, labels=relevant_labels)
+    with open("rfc_performance_report.txt", "w") as f:  # Save performance report of trained model in txt file
+        f.write(rfc_performance)
+
+    joblib.dump((modelRFC, one_hot), "trained_random_forest_with_industry.pkl")
+
+    print("Training finished")
+else:
+    print("Model is already trained")
+
+'''v6_in_place = False
 if not os.path.exists("trained_random_forest.pkl") or v4_in_place == False:
     print("Training Model using Random Forest...")
     max_depth = 12     # depth of decision trees
@@ -267,4 +345,4 @@ if not os.path.exists("trained_random_forest.pkl") or v4_in_place == False:
 else:
     print("Model is already trained")
     modelRFC = joblib.load("trained_random_forest.pkl") # load saved model
-    v6_in_place = True
+    v6_in_place = True'''
