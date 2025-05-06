@@ -1,10 +1,13 @@
 import streamlit as st
+import PageOne
+import PageThree
+import PageTestML
 import pandas as pd 
 import numpy as np
 
 st.set_page_config(page_title="Job Fit Aplication", page_icon=":briefcase:", layout="wide")
 
-menü = st.sidebar.radio("Menu", ("Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "Über uns"))
+menü = st.sidebar.radio("Menu", ("Job Matcher", "Jobsuche nach Region", "Gehaltsfinder", "TEST ML", "Über uns"))
 st.title("Job Fit Application")
 st.subheader("Wilkommen zu deinem personal Job Matcher")
 st.divider()
@@ -20,9 +23,9 @@ st.markdown(
     - [Step Stone](https://www.stepstone.de/)
     """
 )
-if menü == "Job Matcher": 
-    import PageOne
+if menü == "Job Matcher":
     PageOne.main() 
 elif menü == "Gehaltsfinder":
-    import PageThree
     PageThree.main()
+elif menü == "TEST ML":
+    PageTestML.main()
