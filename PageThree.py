@@ -54,7 +54,7 @@ branchen_mapping = {
         "Sonstige": "other-jobs"
     }
 
-
+### Funktionen zur Spalte 1 - Gehaltsdaten
 def datenabfrage(category): ### API-Abfrage zu Gehaltsdaten
     ### API-Request
     url = f"https://api.adzuna.com/v1/api/jobs/ch/history?app_id={APP_ID}&app_key={APP_KEY}&category={category}"
@@ -64,6 +64,7 @@ def datenabfrage(category): ### API-Abfrage zu Gehaltsdaten
     else:
         st.write(f"Fehler in der Datenverarbeitung:{response.status_code}")
         return None
+    
 def datenverarbeitung(raw_data):
     if not raw_data or "month" not in raw_data:
         return None
@@ -98,15 +99,7 @@ def gehaltssuche_anzeigen(df):
         st.metric("📅 Letzter Monat", df["Monat"].max().strftime("%B %Y"))
         st.metric("💰 Gehalt zuletzt", f"{df['Durchschnittsgehalt'].iloc[-1]:,.0f} €".replace(",", "."))
     with col2:
-        if "Minimum" in df.columns and pd.notnull(df["Minimum"].iloc[-1]):
-            st.metric("Gehalt Minimum", f"{df['Minimum'].iloc[-1]:,.0f} €".replace(",", "."))
-        else:
-            st.metric("Gehalt Minimum", "k.A.")
-
-        if "Maximum" in df.columns and pd.notnull(df["Maximum"].iloc[-1]):
-            st.metric("Gehalt Maximum", f"{df['Maximum'].iloc[-1]:,.0f} €".replace(",", "."))
-        else:
-            st.metric("Gehalt Maximum", "k.A.")
+        st.metric("Durchschnittsgehalt", f"{statistics.mean(df['Durchschnittsgehalt']):,.0f} €".replace(",", "."))
 
 def Gehaltsdiagramm(df, auswahl):
     fig = px.line(
@@ -124,23 +117,90 @@ def Gehaltsdiagramm(df, auswahl):
     with st.expander("📋 Rohdaten anzeigen"):
         st.dataframe(df[["Monat", "Durchschnittsgehalt_fmt"]].rename(columns={"Durchschnittsgehalt_fmt": "Ø Gehalt"}), use_container_width=True)
 
-def Gehaltssuche():
+
+### Funktionen zur Spalte 2 - Gehaltsverteilung
+def datenabfrage_verteilung(category): ### API-Abfrage zu Gehaltsverteilung
+    url =f"http://api.adzuna.com/v1/api/jobs/ch/histogram?app_id={APP_ID}&app_key={APP_KEY}&category={category}&content-type=application/json"
+    
+    response = requests.get(url)
+    if response.status_code == 200:
+        json_data = response.json()
+        return json_data.get("histogram", {})
+    else:
+        st.warning("Histogramm-Daten konnten nicht geladen werden.")
+        return {}
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+def zeige_gehaltshistogramm(histogram_data):
+    if not histogram_data:
+        st.info("Keine Histogramm-Daten verfügbar.")
+        return
+
+    try:
+        df_hist = pd.DataFrame([
+        {"Gehalt": float(gehalt), "Anzahl": anzahl}
+        for gehalt, anzahl in histogram_data.items()
+        if is_number(gehalt)
+])
+
+    except ValueError as e:
+        st.warning(f"Fehler bei der Umwandlung der Daten: {e}")
+        return
+    
+    df_hist = df_hist.sort_values("Gehalt")
+    
+    max_gehalt = df_hist["Gehalt"].max()
+    x_tick_step = 10000 
+
+    fig = px.bar(
+        df_hist.sort_values("Gehalt"),
+        x="Gehalt",
+        y="Anzahl",
+        title="Gehaltsverteilung (Histogramm)",
+        labels={"Anzahl": "Jobanzahl", "Gehalt": "Gehalt (€)"}
+    )
+    fig.update_layout(
+        xaxis=dict(
+            range=[0, max_gehalt+x_tick_step],
+            tickformat=",.0f",
+            tickangle=45
+        )
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+         
+### Abruf der Hauptfunktion
+def main():
     st.title("Gehaltssuche nach Branche")
     st.subheader("Finde heraus, wie viel du in deiner Branche verdienen kannst!")
     auswahl = st.selectbox("Wähle eine Branche", branchen)
     category = branchen_mapping[auswahl]
     
-    raw_data = datenabfrage(category)
-    df = datenverarbeitung(raw_data)
+    column1, column2 = st.columns(2)
+    with column1:
+        raw_data = datenabfrage(category)
+        df = datenverarbeitung(raw_data)
     
-    if df is not None:
-        df["Durchschnittsgehalt_fmt"] = df["Durchschnittsgehalt"].apply(gehalt_formatierung)
+        if df is not None:
+            df["Durchschnittsgehalt_fmt"] = df["Durchschnittsgehalt"].apply(gehalt_formatierung)
         
-        gehaltssuche_anzeigen(df)
-        Gehaltsdiagramm(df, auswahl)
-    else:
-        st.warning("Keine Gehaltsdaten verfügbar. Bitte eine andere Branche auswählen.")
-        
+            gehaltssuche_anzeigen(df)
+            Gehaltsdiagramm(df, auswahl)
+        else:
+            st.warning("Keine Gehaltsdaten verfügbar. Bitte eine andere Branche auswählen.")
+    
+    with column2:
+        histogram_data = datenabfrage_verteilung(category)
+    
+        if histogram_data:
+            zeige_gehaltshistogramm(histogram_data)
+        else:
+            st.warning("Keine Gehaltsverteilung verfügbar. Bitte eine andere Branche auswählen.")
 
-def main():
-    Gehaltssuche()
+ 
