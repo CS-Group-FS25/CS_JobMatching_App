@@ -11,7 +11,7 @@ def main():
     if 'page' not in st.session_state:
         st.session_state.page = 'Startseite'
 
-    menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "Über uns"))
+    menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "ML-Test", "Über uns"))
 
     if menü != "Startseite":
         st.session_state.page = menü
@@ -62,6 +62,10 @@ def main():
     elif st.session_state.page == "Über Uns":
         import PageFour
         PageFour.main()
+    elif st.session_state.page == "ML-Test"
+        import PageTestML
+        PageTestML.main()
+    
 
 
 main()
