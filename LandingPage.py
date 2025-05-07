@@ -2,7 +2,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import requests
+import PageOne
+import PageTwo
+import PageThree
+import PageFour
+import PageDashboardTest
+import PageTestML
 
+def __init__():
+    print("INITIALIZING APP")
 
 def main():
     st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
@@ -11,7 +19,7 @@ def main():
     if 'page' not in st.session_state:
         st.session_state.page = 'Startseite'
 
-    menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "Über uns"))
+    menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "Über uns", "ML Test", "Dashboard Test"))
 
     if menü != "Startseite":
         st.session_state.page = menü
@@ -35,33 +43,30 @@ def main():
         with col1:
             if st.button('JobMatcher'):
                 st.session_state.page = "Job Matcher"
-                import PageOne
                 PageOne.main()
         with col2:
             if st.button('Klassische Job-Suche'):
                 st.session_state.page = "Klassische Job-Suche"
-                import PageTwo
                 PageTwo.main()
         with col3:
             if st.button('Gehaltsfinder'):
                 st.session_state.page = "Gehaltsfinder"
-                import PageThree
                 PageThree.main()
 
 
     # Menü Bedienung
     elif st.session_state.page == "Job Matcher":
-        import PageOne
         PageOne.main()
     elif st.session_state.page == "Klassische Job-Suche":
-        import PageTwo
         PageTwo.main()
     elif st.session_state.page == "Gehaltsfinder":
-        import PageThree
         PageThree.main()
     elif st.session_state.page == "Über Uns":
-        import PageFour
         PageFour.main()
+    elif st.session_state.page == "ML Test":
+        PageTestML.main()
+    elif st.session_state.page == "Dashboard Test":
+        PageDashboardTest.main()
 
 
 main()
