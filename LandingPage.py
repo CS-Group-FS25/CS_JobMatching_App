@@ -62,7 +62,7 @@ def main():
     elif st.session_state.page == "Über Uns":
         import PageFour
         PageFour.main()
-    elif st.session_state.page == "ML-Test"
+    elif st.session_state.page == "ML-Test":
         import PageTestML
         PageTestML.main()
     
