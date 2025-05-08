@@ -247,7 +247,7 @@ if not os.path.exists("representative_skills_per_cluster.csv") or v2_in_place ==
     representative_skills = (
         df.sort_values("count", ascending=False)
         .groupby("cluster")
-        .head(5)  # Top 5 pro Gruppe
+        .head(5)  # Top 5 pro Gruppe --> Damit insgesamt 750 "repräsentative Skills"
         .reset_index(drop=True)
     )
 
