@@ -147,7 +147,7 @@ def zeige_gehaltshistogramm(histogram_data):
         {"Gehalt": float(gehalt), "Anzahl": anzahl}
         for gehalt, anzahl in histogram_data.items()
         if is_number(gehalt)
-])
+        ])
 
     except ValueError as e:
         st.warning(f"Fehler bei der Umwandlung der Daten: {e}")
