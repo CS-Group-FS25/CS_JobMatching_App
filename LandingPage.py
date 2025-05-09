@@ -9,11 +9,22 @@ import PageFour
 import PageDashboardTest
 import PageTestML
 
-def __init__():
-    print("INITIALIZING APP")
+industry_df = None
+industries = None
+clustered_skills_df = None
+
+def load_data():
+    global industry_df, industries, clustered_skills_df
+    if industry_df is None:
+        industry_df = pd.read_parquet("DataHandling/cluster_industry_preview.parquet")
+        industries = sorted(industry_df["industry"].dropna().unique())
+    if clustered_skills_df is None:
+        clustered_skills_df = pd.read_parquet("DataHandling/clustered_skills.parquet")
 
 def main():
     st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
+
+    load_data() # Lade alle Dataframes welche die App benötigt
 
     ### session_state
     if 'page' not in st.session_state:

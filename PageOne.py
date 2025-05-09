@@ -1,11 +1,12 @@
 import streamlit as st
 import pandas as pd
 import requests
-
+import LandingPage
+import SkillCategories
 
 ### Benutzprofil als Klasse definieren
 class Benutzerprofil:
-    def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit):
+    def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit, skills):
         self.alter = alter
         self.ort = ort
         self.branche = branche
@@ -13,7 +14,11 @@ class Benutzerprofil:
         self.akademisches_niveau = akademisches_niveau
         self.berufserfahrung = berufserfahrung
         self.arbeitszeit = arbeitszeit
+        self.skills = skills
 
+def styled_multiselect(label, options, key):
+    st.markdown(f"<div style='min-height: 3em'><strong>{label}</strong></div>", unsafe_allow_html=True)
+    return st.multiselect("", options, key=key)
 
 ### Funktion der Profilerstellung und der Datenabfrage
 def datenabfrage():
@@ -23,16 +28,37 @@ def datenabfrage():
 
     Alter = st.text_input("Bitte gebe dein Alter ein")
     Ort = st.text_input("In welcher Region suchst du nach einem Job?")
-    Branche = st.multiselect("Welche Branche interessiert dich?(Mehrfachauswahl möglich)",
-                             ["Finanzen", "Software", "Vertrieb", "Beratung",
-                              "Soziales", "Lehrer", "Baubranche", "Verwaltung",
-                              "Logistik", "Handel", "Industrie", "Pharma", "Dienstleistungen"])
+    Branche = st.selectbox("In welcher Branche möchtest Du arbeiten?", LandingPage.industries)
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", options=("Ja", "Nein"), horizontal=True)
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium",))
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?",
                                    ("Keine Erfahrung", "0-1 Jahr", "2-5 Jahre", "Mehr als 5 Jahre"))
     Arbeitszeit = st.selectbox("Wie viel Zeit kannst du investieren?", ("Vollzeit", "Teilzeit", "Minijob"))
+
+    st.write("Wähle deine Skills aus:")
+    cols = st.columns(5)    # Erstellung von 5 Spalten für die Dropdown Menüs der Skills
+    category_names = list(SkillCategories.skill_categories.keys())
+
+    selected_skills_by_cat = {}
+
+    # Zeile 1 von den Skill Auswahlfeldern
+    cols_row1 = st.columns(5)
+    for i in range(5):
+        cat = category_names[i]
+        with cols_row1[i]:
+            selected = styled_multiselect(cat, SkillCategories.skill_categories[cat], key=cat)
+            if selected:
+                selected_skills_by_cat[cat] = selected
+
+    # Zeile 2 von den Skill Auswahlfeldern
+    cols_row2 = st.columns(5)
+    for i in range(5, 10):
+        cat = category_names[i]
+        with cols_row2[i - 5]:
+            selected = styled_multiselect(cat, SkillCategories.skill_categories[cat], key=cat)
+            if selected:
+                selected_skills_by_cat[cat] = selected
 
     ### aktuelles Profil speichern
     profil = Benutzerprofil(
@@ -42,7 +68,8 @@ def datenabfrage():
         abschluss=Bildungsabschluss,
         akademisches_niveau=Akademisches_Niveau,
         berufserfahrung=Berufserfahrung,
-        arbeitszeit=Arbeitszeit
+        arbeitszeit=Arbeitszeit,
+        skills = selected_skills_by_cat
     )
 
     ### Profil anzeigen unterhalb der Eingabefelder
@@ -55,6 +82,7 @@ def datenabfrage():
         **Akademisches Niveau:** {profil.akademisches_niveau}
         **Berufserfahrung:** {profil.berufserfahrung}
         **Arbeitszeit:** {profil.arbeitszeit}
+        **SKills:** {profil.skills}
         """)
     return profil
 
