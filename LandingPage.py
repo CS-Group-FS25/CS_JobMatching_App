@@ -1,39 +1,60 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import requests
 import PageOne
-import PageTwo
-import PageThree
-import PageFour
 import PageDashboardTest
+import PageTwo
+import PageFour
 import PageTestML
+import PageThree
+import joblib
+import Dashboard
+
+st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
 industry_df = None
 industries = None
-clustered_skills_df = None
+clustered_skills_df = None      # DIESE LOGIK NOCH ÄNDERN DAMIT SIE DURCH DEN RERUN IN PAGEONE NICHT ALLE NEUGELADEN WERDEN (SIEHE BILD, mit Session State!!!)
+model = None
+industry_encoder = None
+
 
 def load_data():
-    global industry_df, industries, clustered_skills_df
+    global industry_df, industries, clustered_skills_df, model, industry_encoder
     if industry_df is None:
         industry_df = pd.read_parquet("DataHandling/cluster_industry_preview.parquet")
         industries = sorted(industry_df["industry"].dropna().unique())
     if clustered_skills_df is None:
         clustered_skills_df = pd.read_parquet("DataHandling/clustered_skills.parquet")
+    if model is None or industry_encoder is None:
+        model, industry_encoder = joblib.load("DataHandling/trained_random_forest_with_industry.pkl")
 
 def main():
-    st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
-
     load_data() # Lade alle Dataframes welche die App benötigt
 
     ### session_state
     if 'page' not in st.session_state:
         st.session_state.page = 'Startseite'
 
-    menü = st.sidebar.radio("Menu", ("Startseite", "Job Matcher", "Klassische Job-Suche", "Gehaltsfinder", "Über uns", "ML Test", "Dashboard Test"))
+    menu = st.sidebar.radio(
+        "Menu",
+        (
+            "Startseite",
+            "Personal Job Matcher",
+            "Job Dashboard",
+            "Klassische Job-Suche",
+            "Gehaltsfinder",
+            "Über uns",
+            "ML Test",
+            "Dashboard Test"
+        ),
+        index=(
+            ["Startseite", "Personal Job Matcher", "Job Dashboard", "Klassische Job-Suche", "Gehaltsfinder",
+                  "Über uns", "ML Test", "Dashboard Test"].index(st.session_state.page)
+        )
+    )
 
-    if menü != "Startseite":
-        st.session_state.page = menü
+    if menu != st.session_state.page:
+        st.session_state.page = menu
 
     if st.session_state.page == "Startseite":
         st.title("Job Fit App")
@@ -44,12 +65,9 @@ def main():
             ## Intro
             Diese App ist eine Job-Matching-Anwendung, die Ihnen hilft, den perfekten Job zu finden.
             Sie können Ihre Fähigkeiten und Interessen eingeben, und die App wird Ihnen passende Stellenangebote vorschlagen.
-            ### An der Seite können sie aus verschiedenen Funktionen wählen!
-            Für weitere Jobs klicken sie auf die folgenden Links:
-            - [LinkedIn](https://business.linkedin.com/de-de/talent-solutions)
-            - [Step Stone](https://www.stepstone.de/)
             """
         )
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
         with col1:
             if st.button('JobMatcher'):
@@ -66,8 +84,10 @@ def main():
 
 
     # Menü Bedienung
-    elif st.session_state.page == "Job Matcher":
+    elif st.session_state.page == "Personal Job Matcher":
         PageOne.main()
+    elif st.session_state.page == "Job Dashboard":
+        Dashboard.main()
     elif st.session_state.page == "Klassische Job-Suche":
         PageTwo.main()
     elif st.session_state.page == "Gehaltsfinder":

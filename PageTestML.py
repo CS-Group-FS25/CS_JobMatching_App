@@ -190,7 +190,7 @@ def main():
     selected_industry = st.selectbox("Wähle eine Branche:", industries)
 
     if st.button("🔍 Suche passenden Job"):
-        selected_skills = [skill for skills in selected_skills_by_cat.values() for skill in skills]
+        selected_skills = [skill for skills in selected_skills_by_cat.values() for skill in skills] # Speichere das Dictionary selected_skills_by_cat in eine flache Liste
 
         if not selected_skills:
             st.warning("Bitte wähle mindestens einen Skill aus.")
