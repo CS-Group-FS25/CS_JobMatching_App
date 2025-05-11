@@ -3,9 +3,6 @@ import streamlit.components.v1 as components
 import matplotlib.pyplot as plt
 import numpy as np
 
-def __init__():
-    st.set_page_config(layout="wide", page_title="Job Dashboard")
-
 def main():
     # --- Layout with 2 columns ---
     col1, col2 = st.columns([2.5, 1.5])

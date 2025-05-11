@@ -39,7 +39,7 @@ def main():
             "Job Dashboard",
             "Klassische Job-Suche",
             "Gehaltsfinder",
-            "Über Uns",
+            "Über uns",
             "ML Test",
             "Dashboard Test"
         ),
