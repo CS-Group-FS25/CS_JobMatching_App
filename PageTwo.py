@@ -63,7 +63,7 @@ def main():
                 'results_per_page': results_per_page,
                 'content-type': 'application/json'
             }
-            ###  Speichern der Antwort in einer Variablen
+            ### Speichern der Antwort in einer Variablen
             response = requests.get(url, params=params)
 
             if response.status_code == 200:  ### Wenn die API erfolgreich abgerufen wurde, wird die Antwort verarbeitet

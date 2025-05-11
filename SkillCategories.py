@@ -1,4 +1,4 @@
-import LandingPage
+import streamlit as st
 
 def create_cluster_to_meta_mapping(skill_categories, clustered_skills_df):
     skill_to_category = {}
@@ -70,4 +70,4 @@ skill_categories = {
         ]
     }
 
-cluster_to_meta = create_cluster_to_meta_mapping(skill_categories, LandingPage.clustered_skills_df)
+# cluster_to_meta = create_cluster_to_meta_mapping(skill_categories, st.session_state.clustered_skills_df)

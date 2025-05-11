@@ -2,9 +2,7 @@ import ast
 import streamlit as st
 import pandas as pd
 import requests
-
 import Dashboard
-import LandingPage
 import SkillCategories
 import numpy as np
 
@@ -32,7 +30,7 @@ def datenabfrage():
 
     Alter = st.text_input("Bitte gebe dein Alter ein")
     Ort = st.text_input("In welcher Region suchst du nach einem Job?")
-    Branche = st.selectbox("In welcher Branche möchtest Du arbeiten?", LandingPage.industries)
+    Branche = st.selectbox("In welcher Branche möchtest Du arbeiten?", st.session_state.industries)
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", options=("Ja", "Nein"), horizontal=True)
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium",))
@@ -135,29 +133,29 @@ def job_suchen(job_title, profil):
 
 def predict_job(selected_skills, branche):
     # Suche die Cluster IDs der ausgewählten Skills aus Dataframe und speicher diese in einer Liste
-    matched_clusters = LandingPage.clustered_skills_df[LandingPage.clustered_skills_df["skill"]
+    matched_clusters = st.session_state.clustered_skills_df[st.session_state.clustered_skills_df["skill"]
         .isin(selected_skills)]["cluster"].unique().tolist()
 
     # Alle 150 Cluster IDs sortiert
-    all_clusters = sorted(LandingPage.clustered_skills_df["cluster"].unique())
+    all_clusters = sorted(st.session_state.clustered_skills_df["cluster"].unique())
     # Erstellung binären Vektors gemäss von Nutzer ausgewählten Skills
     feature_vector = [1 if cluster in matched_clusters else 0 for cluster in all_clusters]
 
     industry_df = pd.DataFrame([[branche]], columns=["industry"])
     # Von Nutzer ausgewählte Branche wird als One-Hot-Vektor dargestellt
-    industry_onehot = LandingPage.industry_encoder.transform(industry_df)[0]
+    industry_onehot = st.session_state.industry_encoder.transform(industry_df)[0]
 
     # Verknüpfung von Skill-Vektor mit Branchen-Vektor
     x_input = np.array(feature_vector + list(industry_onehot)).reshape(1,-1)
 
     # Das trainierte Model gibt das wahrscheinlichste der 500 Job Cluster für den User zurück
-    predicted_job_cluster = LandingPage.model.predict(x_input)[0]
+    predicted_job_cluster = st.session_state.model.predict(x_input)[0]
 
     return representative_job_list(predicted_job_cluster)
 
 def representative_job_list(predicted_job_cluster):
-    job_cluster_row = LandingPage.industry_df[
-        LandingPage.industry_df[
+    job_cluster_row = st.session_state.industry_df[
+        st.session_state.industry_df[
             "cluster_id"] == predicted_job_cluster]  # Es werden die zum vorhergesagten Job Cluster passende Zeile aus dem Dataframe ausgewählt
 
     if not job_cluster_row.empty:
@@ -171,7 +169,7 @@ def representative_job_list(predicted_job_cluster):
 
 # Aufbau der Jobsuche
 def main():
-    profil = datenabfrage()
+    st.session_state.profil = datenabfrage()
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>Finde Deine Top 5 Jobs</h3>", unsafe_allow_html=True)
     center_col = st.columns([6, 2, 6])[1]
@@ -182,12 +180,12 @@ def main():
 
     # LOGIK NACH BUTTON-CLICK
     if clicked:
-        selected_skills = [skill for skills in profil.skills.values() for skill in skills]  # Speichere das Dictionary selected_skills_by_cat in eine flache Liste
+        selected_skills = [skill for skills in st.session_state.profil.skills.values() for skill in skills]  # Speichere das Dictionary selected_skills_by_cat in eine flache Liste
 
-        if not selected_skills or not profil.branche:
+        if not selected_skills or not st.session_state.profil.branche:
             st.warning("Bitte wähle mindestens einen Skill und die Branche aus.")
         else:
-            job_titles_list = predict_job(selected_skills, profil.branche)
+            job_titles_list = predict_job(selected_skills, st.session_state.profil.branche)
             st.session_state.job_titles_list = job_titles_list
 
     if "job_titles_list" in st.session_state:
@@ -201,6 +199,6 @@ def main():
             with cols[1]:
                 st.write("")
                 if st.button(f"{job}", key=f"job_button_{idx}"):
-                    st.session_state.page = "Job Dashboard"
+                    st.session_state.page_redirect = "Job Dashboard"
                     st.session_state.clicked_job = idx
                     st.rerun()
