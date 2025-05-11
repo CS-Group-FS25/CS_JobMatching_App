@@ -1,6 +1,6 @@
 import streamlit as st
 
-def page_four():
+def main():
     st.write("PAGE FOUR") 
     st.write("This is the content of page four.")
     
