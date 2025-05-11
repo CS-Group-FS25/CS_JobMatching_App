@@ -84,7 +84,7 @@ def main():
         PageTwo.main()
     elif st.session_state.page == "Gehaltsfinder":
         PageThree.main()
-    elif st.session_state.page == "Über Uns":
+    elif st.session_state.page == "Über uns":
         PageFour.main()
     elif st.session_state.page == "ML Test":
         PageTestML.main()

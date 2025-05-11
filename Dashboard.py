@@ -10,7 +10,7 @@ APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 def run_job_search(job_title, location, results_per_page=10):
-    # if st.session_state["suche_gestartet"]:
+    #if st.session_state["suche_gestartet"]:
     with st.spinner("Suche läuft..."):
         ### notwendige Parameter für die API-Abfrage
         params = {
@@ -119,5 +119,4 @@ def main():
 
 
     else:
-        st.title("DEIN JOB DASHBOARD")
         st.warning("Besuche erst den Personal Job Matcher damit dir hier Jobs angezeigt werden")
