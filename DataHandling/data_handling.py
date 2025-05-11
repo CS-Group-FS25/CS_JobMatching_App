@@ -247,7 +247,7 @@ if not os.path.exists("representative_skills_per_cluster.csv") or v2_in_place ==
     representative_skills = (
         df.sort_values("count", ascending=False)
         .groupby("cluster")
-        .head(5)  # Top 5 pro Gruppe
+        .head(5)  # Top 5 pro Gruppe --> Damit insgesamt 750 "repräsentative Skills"
         .reset_index(drop=True)
     )
 
@@ -259,7 +259,6 @@ else:
 
 ### MACHINE LEARNING LOGIC
 
-v6_in_place = False
 if not os.path.exists("trained_random_forest_with_industry.pkl") or v4_in_place == False:
     print("Training Model using Random Forest...")
     max_depth = 12     # depth of decision trees
@@ -329,44 +328,4 @@ if not os.path.exists("trained_random_forest_with_industry.pkl") or v4_in_place 
     print("Training finished")
 else:
     print("Model is already trained")
-
-'''v6_in_place = False
-if not os.path.exists("trained_random_forest.pkl") or v4_in_place == False:
-    print("Training Model using Random Forest...")
-    max_depth = 12     # depth of decision trees
-    n_estimators = 75  # amount of decision trees
-
-    filtered_df = matched_jobs_skills_with_job_cluster_df.dropna(subset=["job_title_clustered"]).copy()
-    filtered_vectors_df = skill_clusters_vectors_df.loc[filtered_df.index].reset_index(drop=True)
-    filtered_df = filtered_df.reset_index(drop=True)
-
-    x = filtered_vectors_df.drop(columns=['job_title'])
-    y = LabelEncoder().fit_transform(filtered_df['job_title_clustered'])
-
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
-
-    modelRFC = RandomForestClassifier(
-        n_estimators=n_estimators,
-        max_depth=max_depth,
-        n_jobs=-1,
-        verbose=1,
-        random_state=42
-    )
-    modelRFC.fit(x_train, y_train)
-
-    y_pred = modelRFC.predict(x_test)
-
-    labels_in_test = set(y_test)
-    labels_predicted = set(y_pred)
-    relevant_labels = list(labels_in_test & labels_predicted)
-
-    rfc_performance = classification_report(y_test, y_pred, labels=relevant_labels)
-    with open("rfc_performance_report.txt", "w") as f:  # Save performance report of trained model in txt file
-        f.write(rfc_performance)
-
-    joblib.dump(modelRFC, "trained_random_forest.pkl") # Save trained model
-    print("Training finished")
-else:
-    print("Model is already trained")
-    modelRFC = joblib.load("trained_random_forest.pkl") # load saved model
-    v6_in_place = True'''
+    modelRFC = joblib.load("trained_random_forest_with_industry.pkl")
