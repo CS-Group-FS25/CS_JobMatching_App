@@ -39,7 +39,7 @@ def main():
             "Job Dashboard",
             "Klassische Job-Suche",
             "Gehaltsfinder",
-            "Über uns",
+            "Über Uns",
             "ML Test",
             "Dashboard Test"
         ),
@@ -74,7 +74,6 @@ def main():
             if st.button('Gehaltsfinder'):
                 st.session_state.page_redirect = "Gehaltsfinder"
                 st.rerun()
-
 
     # Menü Bedienung
     elif st.session_state.page == "Personal Job Matcher":
