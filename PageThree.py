@@ -193,13 +193,13 @@ def main():
     column1, column2 = st.columns(2)
     with column1:
         raw_data = datenabfrage(category)
-        df = datenverarbeitung(raw_data)
+        st.session_state.df_salary = datenverarbeitung(raw_data)
 
-        if df is not None:
-            df["Durchschnittsgehalt_fmt"] = df["Durchschnittsgehalt"].apply(gehalt_formatierung)
+        if st.session_state.df_salary is not None:
+            st.session_state.df_salary["Durchschnittsgehalt_fmt"] = st.session_state.df_salary["Durchschnittsgehalt"].apply(gehalt_formatierung)
 
-            gehaltssuche_anzeigen(df)
-            Gehaltsdiagramm(df, auswahl)
+            gehaltssuche_anzeigen(st.session_state.df_salary)
+            Gehaltsdiagramm(st.session_state.df_salary, auswahl)
         else:
             st.warning("Keine Gehaltsdaten verfügbar. Bitte eine andere Branche auswählen.")
 

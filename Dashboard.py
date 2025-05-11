@@ -2,7 +2,9 @@ import streamlit as st
 import streamlit.components.v1 as components
 import requests
 import folium
+from streamlit import session_state
 from streamlit_folium import st_folium
+import PageThree
 
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
@@ -98,6 +100,8 @@ def main():
 
             with tab1:
                 st.markdown("### Salary Range")
+                PageThree.Gehaltsdiagramm(session_state.df_salary, st.session_state.profil.branche)
+
                 components.html("""
                             <div style='width:100%; height:300px; background-color:#f2f2f2; display:flex; align-items:center; justify-content:center;'>
                                 [Salary Chart Placeholder]
@@ -116,7 +120,6 @@ def main():
                             st.session_state.clicked_job = i
                             st.rerun()
 
-
-
     else:
+        st.title("DEIN JOB DASHBOARD")
         st.warning("Besuche erst den Personal Job Matcher damit dir hier Jobs angezeigt werden")
