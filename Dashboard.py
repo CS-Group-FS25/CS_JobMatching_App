@@ -1,9 +1,10 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import requests
 import folium
 from streamlit import session_state
 from streamlit_folium import st_folium
+import statistics
+
 import PageThree
 
 # Adzuna API Einrichten mit API ID und Schlüssel
@@ -83,7 +84,8 @@ def run_job_search(job_title, location, results_per_page=10):
 
 def main():
     if st.session_state.clicked_job is not None:
-        st.markdown(f"<h1 style='text-align: center;'>{st.session_state.job_titles_list[st.session_state.clicked_job].upper()}</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='text-align: center;'>{st.session_state.job_titles_list[st.session_state.clicked_job].
+                    upper()}</h1>", unsafe_allow_html=True)
 
         col1, col2 = st.columns([2, 1.5])
 
@@ -94,19 +96,49 @@ def main():
             run_job_search(st.session_state.job_titles_list[st.session_state.clicked_job],
                            st.session_state.profil.ort)
 
+        # Rechte Spalte: Tabs mit Salary Übersicht und Top 5 Job Übersicht
         with col2:
             st.markdown("<br>", unsafe_allow_html=True)
-            tab1, tab2 = st.tabs(["Salary Range", "Top 5 Jobs"])
+            tab1, tab2 = st.tabs(["Gehaltsübersicht", "Top 5 Jobs"])
 
+            # Salary Logik
             with tab1:
-                st.markdown("### Salary Range")
-                PageThree.Gehaltsdiagramm(session_state.df_salary, st.session_state.profil.branche)
+                # Lade df_salary, category, histogram_data falls main() von PageThree (Gehaltsfinder) noch nicht
+                # ausgeführt wurde, da sonst df_salary nicht definiert ist
+                if "df_salary" not in st.session_state or "category" not in st.session_state:
+                    df_salary, category = PageThree.datenverarbeitung(st.session_state.profil.branche)
+                    st.session_state.df_salary = df_salary
+                    st.session_state.category = category
+                if "histogram_data" not in st.session_state:
+                    st.session_state.histogram_data = PageThree.datenabfrage_verteilung(st.session_state.category)
 
-                components.html("""
-                            <div style='width:100%; height:300px; background-color:#f2f2f2; display:flex; align-items:center; justify-content:center;'>
-                                [Salary Chart Placeholder]
-                            </div>
-                        """, height=300)
+                st.markdown("""
+                <div style="background-color: {bg}; padding: 20px 20px 10px 20px; border-radius: 10px;">
+                    <h4 style="text-align: center;">📊 Gehaltsübersicht</h4>
+                    <div style="display: flex; justify-content: space-between; gap: 40px;">
+                        <div style="flex: 1;">
+                            <p style="margin: 0;"><strong>💰 Gehalt zuletzt</strong> <span style="font-weight: normal;">({monat}):</span></p>
+                            <span style='display: block; font-size: 1.8em; font-weight: bold; margin-top: 6px; margin-bottom: 0;'>{gehalt}</span>
+                        </div>
+                        <div style="flex: 1; text-align: right;">
+                            <p style="margin: 0;"><strong>📈 Durchschnittsgehalt</strong></p>
+                            <span style='display: block; font-size: 1.8em; font-weight: bold; margin-top: 6px; margin-bottom: 0;'>{avg_gehalt}</span>
+                        </div>
+                    </div>
+                </div>
+                """.format(
+                    bg=st.session_state.sec_bg_color,
+                    monat=st.session_state.df_salary["Monat"].max().strftime("%B %Y"),
+                    gehalt=f"{st.session_state.df_salary['Durchschnittsgehalt'].iloc[-1]:,.0f} €".replace(",", "."),
+                    avg_gehalt=f"{statistics.mean(st.session_state.df_salary['Durchschnittsgehalt']):,.0f} €".replace(
+                        ",", ".")
+                ), unsafe_allow_html=True)
+
+                PageThree.gehaltsdiagramm(session_state.df_salary,
+                                          st.session_state.profil.branche,
+                                          False,
+                                          True)
+                PageThree.zeige_gehaltshistogramm(st.session_state.histogram_data, True)
 
             with tab2:
                 st.markdown("### Your Top 5 Jobs")

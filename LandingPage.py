@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import os
+import toml
 import PageOne
 import PageDashboardTest
 import PageTwo
@@ -22,7 +24,23 @@ if "model" not in st.session_state or "industry_encoder" not in st.session_state
 if "clicked_job" not in st.session_state:
     st.session_state.clicked_job = None
 
+def get_theme_colors():
+    config_path = os.path.join(".streamlit", "config.toml")
+    if os.path.exists(config_path):
+        config = toml.load(config_path)
+        return config.get("theme", {})
+    return {}
+
 def main():
+    # Lade Color Code von der Config Datei, damit Farbcodierung in manuellen st.markdown Objekten dem
+    # allgemeinen in der config definierten Farbcode entsprechen
+    if any(key not in st.session_state for key in ("primary_color", "bg_color", "sec_bg_color", "text_color")):
+        theme = get_theme_colors()
+        st.session_state.primary_color = theme.get("primaryColor", "#FF5733")
+        st.session_state.bg_color = theme.get("backgroundColor", "#FFFFFF")
+        st.session_state.sec_bg_color = theme.get("secondaryBackgroundColor", "#8F8F8F")
+        st.session_state.text_color = theme.get("textColor", "#000000")
+
     ### session_state
     if 'page' not in st.session_state:
         st.session_state.page = 'Startseite'
