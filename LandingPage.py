@@ -10,6 +10,7 @@ import PageTestML
 import PageThree
 import joblib
 import Dashboard
+from streamlit.runtime.scriptrunner import get_script_run_ctx
 
 st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
@@ -68,30 +69,94 @@ def main():
         st.session_state.page = menu
 
     if st.session_state.page == "Startseite":
-        st.title("Job Fit App")
-        st.subheader("Wilkommen zu deinem persönlichen Job Matcher")
+        st.markdown(f"""
+            <div style="text-align: center; padding: 2rem 1rem;">
+                <h1 style="font-size: 3rem;">🚀 Willkommen bei der Personal Job Fit App</h1>
+                <p style="font-size: 1.3rem; color: darkgray;">Finde den Job, der wirklich zu dir passt – basierend auf deinen Skills, Interessen und Werten.</p>
+            </div>
+        """, unsafe_allow_html=True)
         st.divider()
-        st.markdown(
-            """ 
-            ## Intro
-            Diese App ist eine Job-Matching-Anwendung, die Ihnen hilft, den perfekten Job zu finden.
-            Sie können Ihre Fähigkeiten und Interessen eingeben, und die App wird Ihnen passende Stellenangebote vorschlagen.
-            """
-        )
-        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        sec_bg = st.session_state.sec_bg_color
+        st.markdown("""
+        <style>
+        a.card-link {
+            text-decoration: none !important;
+            color: inherit !important;
+            display: block;
+        }
+        .feature-card {
+            background-color: #f0f0f033;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid #77777733;
+            transition: 0.3s;
+            min-height: 180px;
+        }
+        .feature-card:hover {
+            background-color: #ffffff10;
+            border-color: #aaaaaa66;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
         col1, col2, col3 = st.columns(3)
+
         with col1:
-            if st.button('Personal Job Matcher'):
-                st.session_state.page_redirect = "Personal Job Matcher"
-                st.rerun()
+            st.markdown(f"""
+                <a href="/?page_redirect=Klassische Job-Suche" target="_self" class="card-link">
+                    <div class="feature-card">
+                        <h3>🔍 Klassische Suche</h3>
+                        <p>Durchsuche den Markt nach Stellen in deiner Region.</p>
+                    </div>
+                </a>
+            """, unsafe_allow_html=True)
+
         with col2:
-            if st.button('Klassische Job-Suche'):
-                st.session_state.page_redirect = "Klassische Job-Suche"
-                st.rerun()
+            st.markdown(f"""
+                <a href="/?page_redirect=Personal Job Matcher" target="_self" class="card-link">
+                    <div class="feature-card">
+                        <h3>🧠 Persönlicher Matcher</h3>
+                        <p>Erhalte massgeschneiderte Jobvorschläge auf Basis deiner Skills.</p>
+                    </div>
+                </a>
+            """, unsafe_allow_html=True)
+
         with col3:
-            if st.button('Gehaltsfinder'):
-                st.session_state.page_redirect = "Gehaltsfinder"
-                st.rerun()
+            st.markdown(f"""
+                <a href="/?page_redirect=Gehaltsfinder" target="_self" class="card-link">
+                    <div class="feature-card">
+                        <h3>💰 Gehaltsfinder</h3>
+                        <p>Vergleiche, was andere in deiner Branche verdienen.</p>
+                    </div>
+                </a>
+            """, unsafe_allow_html=True)
+
+        # Query param auslesen (oben definierter redirect)
+        if "page_redirect" in st.query_params:
+            st.session_state.page_redirect = st.query_params["page_redirect"]
+            st.query_params.clear()
+            st.rerun()
+
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style="text-align: center; padding: 2rem;">
+                <h2 style="margin-bottom: 0.5rem;">Bereit, deinen Traumjob zu finden?</h2>
+                <p style="font-size: 1.1rem; color: #bbb;">Starte jetzt durch mit dem Personal Job Matcher.</p>
+                <a href="/?page_redirect=Personal Job Matcher" target="_self">
+                    <button style="padding: 0.75rem 2rem; font-size: 1.1rem; background-color: #FF0000; color: white; border: none; border-radius: 8px; margin-top: 1rem;">🚀 Jetzt starten</button>
+                </a>
+            </div>
+        """, unsafe_allow_html=True)
 
     # Menü Bedienung
     elif st.session_state.page == "Personal Job Matcher":
