@@ -96,16 +96,16 @@ def datenverarbeitung(branche):
 
 
 def gehalt_formatierung(value):
-    return f"{value:,.0f} €".replace(",", ".") if pd.notnull(value) else "k.A."
+    return f"{value:,.0f} CHF".replace(",", ".") if pd.notnull(value) else "k.A."
 
 
 def gehaltssuche_anzeigen(df):
     col1, col2 = st.columns(2)
     with col1:
         st.metric("📅 Letzter Monat", df["Monat"].max().strftime("%B %Y"))
-        st.metric("💰 Gehalt zuletzt", f"{df['Durchschnittsgehalt'].iloc[-1]:,.0f} €".replace(",", "."))
+        st.metric("💰 Gehalt zuletzt", f"{df['Durchschnittsgehalt'].iloc[-1]:,.0f} CHF".replace(",", "."))
     with col2:
-        st.metric("Durchschnittsgehalt", f"{statistics.mean(df['Durchschnittsgehalt']):,.0f} €".replace(",", "."))
+        st.metric("Durchschnittsgehalt", f"{statistics.mean(df['Durchschnittsgehalt']):,.0f} CHF".replace(",", "."))
 
 
 def gehaltsdiagramm(df, auswahl, show_raw=True, dashboard=False):
@@ -118,7 +118,7 @@ def gehaltsdiagramm(df, auswahl, show_raw=True, dashboard=False):
         x="Monat",
         y="Durchschnittsgehalt",
         title=f"Gehaltstrend für {auswahl}",
-        labels={"Durchschnittsgehalt": "€"},
+        labels={"Durchschnittsgehalt": "CHF"},
         markers=True
     )
     sec_bg = st.session_state.sec_bg_color
@@ -185,7 +185,7 @@ def zeige_gehaltshistogramm(histogram_data, dashboard=False):
         x="Gehalt",
         y="Anzahl",
         title="Gehaltsverteilung (Histogramm)",
-        labels={"Anzahl": "Jobanzahl", "Gehalt": "Gehalt (€)"}
+        labels={"Anzahl": "Jobanzahl", "Gehalt": "Gehalt (CHF)"}
     )
 
     sec_bg = st.session_state.sec_bg_color

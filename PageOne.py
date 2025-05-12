@@ -10,9 +10,9 @@ import altair as alt
 
 ### Benutzprofil als Klasse definieren
 class Benutzerprofil:
-    def __init__(self, alter, ort, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit, skills):
+    def __init__(self, alter, location, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit, skills):
         self.alter = alter
-        self.ort = ort
+        self.location = location
         self.branche = branche
         self.abschluss = abschluss
         self.akademisches_niveau = akademisches_niveau
@@ -29,11 +29,11 @@ def styled_multiselect(label, options, key):
 ### Funktion der Profilerstellung und der Datenabfrage
 def datenabfrage():
     ### Willkommen + Abfrage der Daten
-    st.title("Dein Persönlicher Job-Matcher")
+    st.title("Dein Persönlicher JobMatcher")
     st.header("Kreiere zuerst dein persönliches Profil")
 
     Alter = st.text_input("Bitte gebe dein Alter ein")
-    Ort = st.text_input("In welcher Region suchst du nach einem Job?")
+    Location = st.text_input("In welcher Region suchst du nach einem Job?")
     Branche = st.selectbox("In welcher Branche möchtest Du arbeiten?", st.session_state.industries)
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", options=("Ja", "Nein"), horizontal=True)
     if Bildungsabschluss == "Ja":
@@ -72,7 +72,7 @@ def datenabfrage():
     ### aktuelles Profil speichern
     profil = Benutzerprofil(
         alter=Alter,
-        ort=Ort,
+        location=Location,
         branche=Branche,
         abschluss=Bildungsabschluss,
         akademisches_niveau=Akademisches_Niveau,
@@ -85,7 +85,7 @@ def datenabfrage():
     with st.expander("Profil anzeigen"):
         st.markdown(f"""
         **Alter:** {profil.alter}
-        **Ort:** {profil.ort}
+        **Ort:** {profil.location}
         **Branche:** {profil.branche}
         **Bildungsabschluss:** {profil.abschluss}
         **Akademisches Niveau:** {profil.akademisches_niveau}
@@ -109,7 +109,7 @@ def job_suchen(job_title, profil):
         'app_id': APP_ID,
         'app_key': APP_KEY,
         'what': job_title,  # Jobtitel (richtig benannt)
-        'where': profil.ort  # Region (richtig benannt)
+        'where': profil.location  # Region (richtig benannt)
     }
 
     # Adzuna API anfragen über requests
@@ -121,7 +121,7 @@ def job_suchen(job_title, profil):
 
         ### Überprüfen, ob Jobs gefunden werden
         if job_daten['results']:
-            st.write(f"Gefundene Jobs in {profil.ort} für {job_title}:")
+            st.write(f"Gefundene Jobs in {profil.location} für {job_title}:")
             for job in job_daten['results']:  # Ändere 'jobs' zu 'job'
                 title = job.get('title', 'Kein Titel verfügbar')
                 company = job.get('company', {}).get('display_name', 'Unbekannt')
@@ -132,7 +132,7 @@ def job_suchen(job_title, profil):
                 st.write(f"[Details anzeigen]({url})")
                 st.write("\n")
         else:
-            st.write(f"Keine Jobs für {job_title} in {profil.ort} gefunden.")
+            st.write(f"Keine Jobs für {job_title} in {profil.location} gefunden.")
     else:
         st.write(f"Fehler bei der API-Anfrage: {response.status_code}")
 
