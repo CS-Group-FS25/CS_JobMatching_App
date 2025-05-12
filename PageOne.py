@@ -188,7 +188,7 @@ def main():
         else:
             job_titles_list = predict_job(selected_skills, st.session_state.profil.branche)
             st.session_state.job_titles_list = job_titles_list
-
+            
     if "job_titles_list" in st.session_state:
         st.markdown("<hr style='height:2px;border:none;color:#333;background-color:#333;'>",
                     unsafe_allow_html=True)
@@ -196,47 +196,43 @@ def main():
         st.markdown("<br>", unsafe_allow_html=True)
 
         jobs = st.session_state.job_titles_list[-5:]
-        scores= [0.98, 0.80, 0.65, 0.5, 0.3]
-        
+        heights = [200, 140, 90, 60, 30]  # Beispiel-Höhen für Balken
+        max_height = max(heights) + 40
+
+        sorted_indices = np.argsort(heights)[::-1]
+        medals = {sorted_indices[0]: "🥇", sorted_indices[1]: "🥈", sorted_indices[2]: "🥉"}
+
         cols = st.columns(5)
-        
-        for idx, (col, job, score) in enumerate(zip(cols, jobs, scores)):
-            
+
+        for i, col in enumerate(cols):
             with col:
-                # Dataframe für den Score der Jobs erstellen
-                df = pd.DataFrame({'Job': [job],'Score': [score]})
-                
-                chart = alt.Chart(df).mark_bar(size=40).encode(
-                    x=alt.X('Job:N', axis=None),
-                    y=alt.Y('Score:Q', axis=None, scale=alt.Scale(domain=[0, 1])),
-                ).properties(height=150)
-                st.altair_chart(chart, use_container_width=True)
-             
-  
-                    
+                # Balken mit Medaillen
+                medal_html = ""
+                if i in medals:
+                    offset = max_height - heights[i] - 30
+                    medal_html = f'<div style="position:absolute; top:{offset}px; font-size:24px;">{medals[i]}</div>'
+
+                # HTML für Balken
+                html_block = f"""
+                    <div style="height:{max_height}px; position:relative; display:flex; flex-direction: column; justify-content:flex-end; align-items:center;">
+                        {medal_html}  <!-- Medaille wird oben auf den Balken gesetzt -->
+                        <div style="width:80%; height:{heights[i]}px; background-color:#00914d; border-radius:10px; border:2px solid black;"></div>
+                    </div>
+                """
+                st.markdown(html_block, unsafe_allow_html=True)
+
+               
+                # Button unter dem Balken
                 button_style = """
-                        <style>
-                            .button-container {
-                                display: flex,
-                                justify-content: center;
-                                margin-top: 10px;
-                            }
-                            div.stButton > button {
-                                padding: 1rem 2rem;
-                                front-size: 1rem;
-                                border-radius: 8px;
-                                transition: 0.3s;
-                            }
-                            div.stButton > button:hover {
-                                background-color: #098439;
-                                color: white;
-                            }
-                        </style>
-                    """
+                    <style>
+                        div[data-testid="stButton"] {
+                            display: flex;
+                            justify-content: center;
+                        }
+                    </style>
+                """
                 st.markdown(button_style, unsafe_allow_html=True)
-                    
-                if st.button(f"Details{job}", key=f"job_button_{idx}"):
+                if st.button(f"{jobs[i]}", key=f"job_button_{i}"):
                     st.session_state.page_redirect = "Job Dashboard"
-                    st.session_state.clicked_job = idx
+                    st.session_state.clicked_job = i
                     st.rerun()
-            
