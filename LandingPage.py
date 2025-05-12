@@ -20,7 +20,7 @@ st.markdown("""
         [data-testid="stSidebar"] {
             width: auto !important;
             min-width: unset !important;
-            max-width: 220px !important;
+            max-width: 280px !important;
             padding-right: 1rem;
         }
 
