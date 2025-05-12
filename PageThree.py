@@ -12,7 +12,7 @@ url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 ### Branchen zur Auswahl definieren
 branchen = ["Buchhaltung & Finanzwesen", "IT", "Vertrieb", "Kundendienst",
-            "Ingenieur", "HR", "Gesundheit", "Gastronomie", "Marketing",
+            "Ingenieur", "Personal & Personalbeschaffung", "Gesundheit", "Gastronomie", "Marketing",
             "Logistik", "Lehrer", "Bau", "Verwaltung", "Rechtswesen",
             "Design", "Hochschulabsolventen", "Einzelhandel",
             "Consulting", "Fertigung", "Wissenschaft",
@@ -217,29 +217,28 @@ def main():
     st.title("Gehaltssuche nach Branche")
     st.subheader("Finde heraus, wie viel du in deiner Branche verdienen kannst!")
     auswahl = st.selectbox("Wähle eine Branche", branchen)
-
+    category = branchen_mapping[auswahl]
+    
+    if st.session_state.get("category") != category:
+        st.session_state.category = category
+        st.session_state.df_salary, _ = datenverarbeitung(auswahl)
+        st.session_state.histogram_data = datenabfrage_verteilung(category)
+    
     column1, column2 = st.columns(2)
     with (column1):
-        if "df_salary" not in st.session_state or "category" not in st.session_state:
-            df_salary, category = datenverarbeitung(auswahl)
-            st.session_state.df_salary = df_salary
-            st.session_state.category = category
-
         if st.session_state.df_salary is not None:
             if "Durchschnittsgehalt_fmt" not in st.session_state.df_salary.columns:
-                st.session_state.df_salary["Durchschnittsgehalt_fmt"] = (st.session_state.df_salary
-                                                                         ["Durchschnittsgehalt"]
-                                                                         .apply(gehalt_formatierung))
-
+                st.session_state.df_salary["Durchschnittsgehalt_fmt"] = (
+                    st.session_state.df_salary["Durchschnittsgehalt"]
+                    .apply(gehalt_formatierung) 
+                )
             gehaltssuche_anzeigen(st.session_state.df_salary)
             gehaltsdiagramm(st.session_state.df_salary, auswahl)
-        else:
-            st.warning("Keine Gehaltsdaten verfügbar. Bitte eine andere Branche auswählen.")
-
+        else: 
+            st.warning("Keine Gehaltsdaten verfügbar. Bitte eine andere Branche auswählen.")    
+        
+        
     with column2:
-        if "histogram_data" not in st.session_state:
-            st.session_state.histogram_data = datenabfrage_verteilung(st.session_state.category)
-
         if st.session_state.histogram_data:
             zeige_gehaltshistogramm(st.session_state.histogram_data)
         else:
