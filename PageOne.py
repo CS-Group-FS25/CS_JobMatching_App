@@ -5,6 +5,7 @@ import requests
 import Dashboard
 import SkillCategories
 import numpy as np
+import altair as alt
 
 ### Benutzprofil als Klasse definieren
 class Benutzerprofil:
@@ -187,18 +188,51 @@ def main():
         else:
             job_titles_list = predict_job(selected_skills, st.session_state.profil.branche)
             st.session_state.job_titles_list = job_titles_list
-
+            
     if "job_titles_list" in st.session_state:
         st.markdown("<hr style='height:2px;border:none;color:#333;background-color:#333;'>",
                     unsafe_allow_html=True)
         st.markdown("<div style='text-align: center;'><h3>DEINE TOP 5 JOBS</h3></div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
-        for idx, job in enumerate(st.session_state.job_titles_list):
-            cols = st.columns([6, 2, 6])  # Linksbündig, Mitte, Rechts – Button in der Mitte
-            with cols[1]:
-                st.write("")
-                if st.button(f"{job}", key=f"job_button_{idx}"):
+        jobs = st.session_state.job_titles_list[-5:]
+        heights = [200, 140, 90, 60, 30]  # Beispiel-Höhen für Balken
+        max_height = max(heights) + 40
+
+        sorted_indices = np.argsort(heights)[::-1]
+        medals = {sorted_indices[0]: "🥇", sorted_indices[1]: "🥈", sorted_indices[2]: "🥉"}
+
+        cols = st.columns(5)
+
+        for i, col in enumerate(cols):
+            with col:
+                # Balken mit Medaillen
+                medal_html = ""
+                if i in medals:
+                    offset = max_height - heights[i] - 30
+                    medal_html = f'<div style="position:absolute; top:{offset}px; font-size:24px;">{medals[i]}</div>'
+
+                # HTML für Balken
+                html_block = f"""
+                    <div style="height:{max_height}px; position:relative; display:flex; flex-direction: column; justify-content:flex-end; align-items:center;">
+                        {medal_html}  <!-- Medaille wird oben auf den Balken gesetzt -->
+                        <div style="width:80%; height:{heights[i]}px; background-color:#098439; border-radius:10px; border:2px solid black;"></div>
+                    </div>
+                """
+                st.markdown(html_block, unsafe_allow_html=True)
+
+               
+                # Button unter dem Balken
+                button_style = """
+                    <style>
+                        div[data-testid="stButton"] {
+                            display: flex;
+                            justify-content: center;
+                        }
+                    </style>
+                """
+                st.markdown(button_style, unsafe_allow_html=True)
+                if st.button(f"{jobs[i]}", key=f"job_button_{i}"):
                     st.session_state.page_redirect = "Job Dashboard"
-                    st.session_state.clicked_job = idx
+                    st.session_state.clicked_job = i
                     st.rerun()
