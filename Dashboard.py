@@ -94,7 +94,7 @@ def main():
             st.markdown("<br>", unsafe_allow_html=True)
             st.markdown("### Job Möglichkeiten in deiner Region")
             run_job_search(st.session_state.job_titles_list[st.session_state.clicked_job],
-                           st.session_state.profil.ort)
+                           st.session_state.profil.location)
 
         # Rechte Spalte: Tabs mit Salary Übersicht und Top 5 Job Übersicht
         with col2:
@@ -105,14 +105,21 @@ def main():
             with tab1:
                 # Lade df_salary, category, histogram_data falls main() von PageThree (Gehaltsfinder) noch nicht
                 # ausgeführt wurde, da sonst df_salary nicht definiert ist
-                if "df_salary" not in st.session_state or "category" not in st.session_state:
+                if (
+                    "df_salary" not in st.session_state 
+                    or "category" not in st.session_state
+                    or st.session_state.category != st.session_state.profil.branche
+                    ):
                     df_salary, category = PageThree.datenverarbeitung(st.session_state.profil.branche)
                     st.session_state.df_salary = df_salary
                     st.session_state.category = category
-                if "histogram_data" not in st.session_state:
+                if (
+                    "histogram_data" not in st.session_state
+                    or st.session_state.category != st.session_state.profil.branche
+                ):
                     st.session_state.histogram_data = PageThree.datenabfrage_verteilung(st.session_state.category)
 
-                st.markdown("""
+                    st.markdown("""
                 <div style="background-color: {bg}; padding: 20px 20px 10px 20px; border-radius: 10px;">
                     <h4 style="text-align: center;">📊 Gehaltsübersicht</h4>
                     <div style="display: flex; justify-content: space-between; gap: 40px;">
@@ -129,8 +136,8 @@ def main():
                 """.format(
                     bg=st.session_state.sec_bg_color,
                     monat=st.session_state.df_salary["Monat"].max().strftime("%B %Y"),
-                    gehalt=f"{st.session_state.df_salary['Durchschnittsgehalt'].iloc[-1]:,.0f} €".replace(",", "."),
-                    avg_gehalt=f"{statistics.mean(st.session_state.df_salary['Durchschnittsgehalt']):,.0f} €".replace(
+                    gehalt=f"{st.session_state.df_salary['Durchschnittsgehalt'].iloc[-1]:,.0f} CHF".replace(",", "."),
+                    avg_gehalt=f"{statistics.mean(st.session_state.df_salary['Durchschnittsgehalt']):,.0f} CHF".replace(
                         ",", ".")
                 ), unsafe_allow_html=True)
 
