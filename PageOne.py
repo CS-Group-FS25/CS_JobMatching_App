@@ -228,7 +228,7 @@ def main():
                                 transition: 0.3s;
                             }
                             div.stButton > button:hover {
-                                background-color: #4CAF50;
+                                background-color: #098439;
                                 color: white;
                             }
                         </style>
