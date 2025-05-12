@@ -5,6 +5,7 @@ import requests
 import Dashboard
 import SkillCategories
 import numpy as np
+import altair as alt
 
 ### Benutzprofil als Klasse definieren
 class Benutzerprofil:
@@ -194,11 +195,48 @@ def main():
         st.markdown("<div style='text-align: center;'><h3>DEINE TOP 5 JOBS</h3></div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
-        for idx, job in enumerate(st.session_state.job_titles_list):
-            cols = st.columns([6, 2, 6])  # Linksbündig, Mitte, Rechts – Button in der Mitte
-            with cols[1]:
-                st.write("")
-                if st.button(f"{job}", key=f"job_button_{idx}"):
+        jobs = st.session_state.job_titles_list[-5:]
+        scores= [0.98, 0.80, 0.65, 0.5, 0.3]
+        
+        cols = st.columns(5)
+        
+        for idx, (col, job, score) in enumerate(zip(cols, jobs, scores)):
+            
+            with col:
+                # Dataframe für den Score der Jobs erstellen
+                df = pd.DataFrame({'Job': [job],'Score': [score]})
+                
+                chart = alt.Chart(df).mark_bar(size=40).encode(
+                    x=alt.X('Job:N', axis=None),
+                    y=alt.Y('Score:Q', axis=None, scale=alt.Scale(domain=[0, 1])),
+                ).properties(height=150)
+                st.altair_chart(chart, use_container_width=True)
+             
+  
+                    
+                button_style = """
+                        <style>
+                            .button-container {
+                                display: flex,
+                                justify-content: center;
+                                margin-top: 10px;
+                            }
+                            div.stButton > button {
+                                padding: 1rem 2rem;
+                                front-size: 1rem;
+                                border-radius: 8px;
+                                transition: 0.3s;
+                            }
+                            div.stButton > button:hover {
+                                background-color: #4CAF50;
+                                color: white;
+                            }
+                        </style>
+                    """
+                st.markdown(button_style, unsafe_allow_html=True)
+                    
+                if st.button(f"Details{job}", key=f"job_button_{idx}"):
                     st.session_state.page_redirect = "Job Dashboard"
                     st.session_state.clicked_job = idx
                     st.rerun()
+            
