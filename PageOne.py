@@ -5,6 +5,8 @@ import requests
 import Dashboard
 import SkillCategories
 import numpy as np
+import altair as alt
+
 
 ### Benutzprofil als Klasse definieren
 class Benutzerprofil:
@@ -18,9 +20,11 @@ class Benutzerprofil:
         self.arbeitszeit = arbeitszeit
         self.skills = skills
 
+
 def styled_multiselect(label, options, key):
     st.markdown(f"<div style='min-height: 3em'><strong>{label}</strong></div>", unsafe_allow_html=True)
     return st.multiselect("", options, key=key)
+
 
 ### Funktion der Profilerstellung und der Datenabfrage
 def datenabfrage():
@@ -40,7 +44,7 @@ def datenabfrage():
 
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("Wähle deine Skills aus:")
-    cols = st.columns(5)    # Erstellung von 5 Spalten für die Dropdown Menüs der Skills
+    cols = st.columns(5)  # Erstellung von 5 Spalten für die Dropdown Menüs der Skills
     category_names = list(SkillCategories.skill_categories.keys())
 
     selected_skills_by_cat = {}
@@ -74,7 +78,7 @@ def datenabfrage():
         akademisches_niveau=Akademisches_Niveau,
         berufserfahrung=Berufserfahrung,
         arbeitszeit=Arbeitszeit,
-        skills = selected_skills_by_cat
+        skills=selected_skills_by_cat
     )
 
     ### Profil anzeigen unterhalb der Eingabefelder
@@ -90,6 +94,7 @@ def datenabfrage():
         **SKills:** {profil.skills}
         """)
     return profil
+
 
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
@@ -131,10 +136,11 @@ def job_suchen(job_title, profil):
     else:
         st.write(f"Fehler bei der API-Anfrage: {response.status_code}")
 
+
 def predict_job(selected_skills, branche):
     # Suche die Cluster IDs der ausgewählten Skills aus Dataframe und speicher diese in einer Liste
     matched_clusters = st.session_state.clustered_skills_df[st.session_state.clustered_skills_df["skill"]
-        .isin(selected_skills)]["cluster"].unique().tolist()
+    .isin(selected_skills)]["cluster"].unique().tolist()
 
     # Alle 150 Cluster IDs sortiert
     all_clusters = sorted(st.session_state.clustered_skills_df["cluster"].unique())
@@ -146,12 +152,13 @@ def predict_job(selected_skills, branche):
     industry_onehot = st.session_state.industry_encoder.transform(industry_df)[0]
 
     # Verknüpfung von Skill-Vektor mit Branchen-Vektor
-    x_input = np.array(feature_vector + list(industry_onehot)).reshape(1,-1)
+    x_input = np.array(feature_vector + list(industry_onehot)).reshape(1, -1)
 
     # Das trainierte Model gibt das wahrscheinlichste der 500 Job Cluster für den User zurück
     predicted_job_cluster = st.session_state.model.predict(x_input)[0]
 
     return representative_job_list(predicted_job_cluster)
+
 
 def representative_job_list(predicted_job_cluster):
     job_cluster_row = st.session_state.industry_df[
@@ -167,12 +174,13 @@ def representative_job_list(predicted_job_cluster):
         st.warning("Das vorhergesagte Job Cluster beinhaltet keine Jobs.")
         return None
 
+
 # Aufbau der Jobsuche
 def main():
     st.session_state.profil = datenabfrage()
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>Finde Deine Top 5 Jobs</h3>", unsafe_allow_html=True)
-    center_col = st.columns([6, 2, 6])[1]
+    center_col = st.columns([6, 3, 6])[1]
     with center_col:
         st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
         clicked = st.button("🔍 Suche starten")
@@ -180,7 +188,8 @@ def main():
 
     # LOGIK NACH BUTTON-CLICK
     if clicked:
-        selected_skills = [skill for skills in st.session_state.profil.skills.values() for skill in skills]  # Speichere das Dictionary selected_skills_by_cat in eine flache Liste
+        selected_skills = [skill for skills in st.session_state.profil.skills.values() for skill in
+                           skills]  # Speichere das Dictionary selected_skills_by_cat in eine flache Liste
 
         if not selected_skills or not st.session_state.profil.branche:
             st.warning("Bitte wähle mindestens einen Skill und die Branche aus.")
@@ -192,13 +201,46 @@ def main():
         st.markdown("<hr style='height:2px;border:none;color:#333;background-color:#333;'>",
                     unsafe_allow_html=True)
         st.markdown("<div style='text-align: center;'><h3>DEINE TOP 5 JOBS</h3></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><h5>Klicke auf einen Job für weitere Details</h5></div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
-        for idx, job in enumerate(st.session_state.job_titles_list):
-            cols = st.columns([6, 2, 6])  # Linksbündig, Mitte, Rechts – Button in der Mitte
-            with cols[1]:
-                st.write("")
-                if st.button(f"{job}", key=f"job_button_{idx}"):
+        jobs = st.session_state.job_titles_list[-5:]
+        heights = [200, 140, 90, 60, 30]  # Beispiel-Höhen für Balken
+        max_height = max(heights) + 40
+
+        sorted_indices = np.argsort(heights)[::-1]
+        medals = {sorted_indices[0]: "🥇", sorted_indices[1]: "🥈", sorted_indices[2]: "🥉"}
+
+        cols = st.columns(5)
+
+        for i, col in enumerate(cols):
+            with col:
+                # Balken mit Medaillen
+                medal_html = ""
+                if i in medals:
+                    offset = max_height - heights[i] - 30
+                    medal_html = f'<div style="position:absolute; top:{offset}px; font-size:24px;">{medals[i]}</div>'
+
+                # HTML für Balken
+                html_block = f"""
+                    <div style="height:{max_height}px; position:relative; display:flex; flex-direction: column; justify-content:flex-end; align-items:center;">
+                        {medal_html}  <!-- Medaille wird oben auf den Balken gesetzt -->
+                        <div style="width:80%; height:{heights[i]}px; background-color:#098439; border-radius:10px; border:2px solid black;"></div>
+                    </div>
+                """
+                st.markdown(html_block, unsafe_allow_html=True)
+
+                # Button unter dem Balken
+                button_style = """
+                    <style>
+                        div[data-testid="stButton"] {
+                            display: flex;
+                            justify-content: center;
+                        }
+                    </style>
+                """
+                st.markdown(button_style, unsafe_allow_html=True)
+                if st.button(f"{jobs[i]}", key=f"job_button_{i}"):
                     st.session_state.page_redirect = "Job Dashboard"
-                    st.session_state.clicked_job = idx
+                    st.session_state.clicked_job = i
                     st.rerun()

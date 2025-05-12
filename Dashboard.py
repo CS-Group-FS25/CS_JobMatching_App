@@ -87,7 +87,7 @@ def main():
         st.markdown(f"<h1 style='text-align: center;'>{st.session_state.job_titles_list[st.session_state.clicked_job].
                     upper()}</h1>", unsafe_allow_html=True)
 
-        col1, col2 = st.columns([2, 1.5])
+        col1, col2 = st.columns([2, 1.8])
 
         # Left Column: Map and Job List
         with col1:
@@ -117,7 +117,7 @@ def main():
                     <h4 style="text-align: center;">📊 Gehaltsübersicht</h4>
                     <div style="display: flex; justify-content: space-between; gap: 40px;">
                         <div style="flex: 1;">
-                            <p style="margin: 0;"><strong>💰 Gehalt zuletzt</strong> <span style="font-weight: normal;">({monat}):</span></p>
+                            <p style="margin: 0;"><strong>💰 Gehalt zuletzt:</strong></p>
                             <span style='display: block; font-size: 1.8em; font-weight: bold; margin-top: 6px; margin-bottom: 0;'>{gehalt}</span>
                         </div>
                         <div style="flex: 1; text-align: right;">

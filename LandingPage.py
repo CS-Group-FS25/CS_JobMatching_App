@@ -14,6 +14,34 @@ from streamlit.runtime.scriptrunner import get_script_run_ctx
 
 st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
 
+st.markdown("""
+    <style>
+        /* Minimale Sidebar-Breite erzwingen */
+        [data-testid="stSidebar"] {
+            width: auto !important;
+            min-width: unset !important;
+            max-width: 220px !important;
+            padding-right: 1rem;
+        }
+
+        /* Sidebar-Textfarbe */
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
+        /* Optional: aktives Element hervorheben */
+        [data-testid="stSidebar"] .stRadio > div > label[data-selected="true"] {
+            background-color: #0b9444 !important;
+            border-radius: 5px;
+        }
+
+        /* Hauptinhalt links bündig halten */
+        .main {
+            margin-left: 220px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 if "industry_df" not in st.session_state:
     st.session_state.industry_df = pd.read_parquet("DataHandling/cluster_industry_preview.parquet")
     st.session_state.industries = sorted(st.session_state.industry_df["industry"].dropna().unique())
@@ -91,7 +119,7 @@ def main():
             text-align: center;
             border: 1px solid #77777733;
             transition: 0.3s;
-            min-height: 180px;
+            min-height: 260px;
         }
         .feature-card:hover {
             background-color: #ffffff10;
@@ -115,7 +143,7 @@ def main():
             st.markdown(f"""
                 <a href="/?page_redirect=Klassische Job-Suche" target="_self" class="card-link">
                     <div class="feature-card">
-                        <h3>🔍 Klassische Suche</h3>
+                        <h3>🔍</p>Klassische Suche</h3>
                         <p>Durchsuche den Markt nach Stellen in deiner Region.</p>
                     </div>
                 </a>
@@ -125,7 +153,7 @@ def main():
             st.markdown(f"""
                 <a href="/?page_redirect=Personal Job Matcher" target="_self" class="card-link">
                     <div class="feature-card">
-                        <h3>🧠 Persönlicher Matcher</h3>
+                        <h3>🧠</p>Persönlicher Matcher</h3>
                         <p>Erhalte massgeschneiderte Jobvorschläge auf Basis deiner Skills.</p>
                     </div>
                 </a>
@@ -135,7 +163,7 @@ def main():
             st.markdown(f"""
                 <a href="/?page_redirect=Gehaltsfinder" target="_self" class="card-link">
                     <div class="feature-card">
-                        <h3>💰 Gehaltsfinder</h3>
+                        <h3>💰</p>Gehaltsfinder</h3>
                         <p>Vergleiche, was andere in deiner Branche verdienen.</p>
                     </div>
                 </a>
