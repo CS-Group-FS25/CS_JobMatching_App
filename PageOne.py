@@ -216,7 +216,7 @@ def main():
                 html_block = f"""
                     <div style="height:{max_height}px; position:relative; display:flex; flex-direction: column; justify-content:flex-end; align-items:center;">
                         {medal_html}  <!-- Medaille wird oben auf den Balken gesetzt -->
-                        <div style="width:80%; height:{heights[i]}px; background-color:#00914d; border-radius:10px; border:2px solid black;"></div>
+                        <div style="width:80%; height:{heights[i]}px; background-color:#098439; border-radius:10px; border:2px solid black;"></div>
                     </div>
                 """
                 st.markdown(html_block, unsafe_allow_html=True)
