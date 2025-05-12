@@ -1,9 +1,9 @@
 [theme] # You have to add this line
 
-primaryColor = '#565656'
+primaryColor = '#ff0000' # Red
 
-secondaryBackgroundColor = '#565656'
+secondaryBackgroundColor = '#098439' # HSG-Grün
 
-backgroundColor = '#00091C'
+backgroundColor = '#ffffff' # white
 
-textColor = '#FFFFFF'
+textColor = '#000000' #black

@@ -63,11 +63,11 @@ v1_in_place = False
 if not os.path.exists("matched_jobs_skills.csv"):       # check if df is already in place; if not, create df
     print("Create new data frame with jobs and skills by merging both data sets")
 
-    ### clear list of empty entries and duplicates
+    # clear list of empty entries and duplicates
     skills_df = skills_df.dropna().drop_duplicates()
     jobs_df = jobs_df.dropna().drop_duplicates()
 
-    ### normalize skills list
+    # normalize skills list
     skills_df['job_skills_cleaned'] = skills_df['job_skills'].apply(
         lambda x: [s.strip().lower() for s in str(x).split(',')] if pd.notnull(x) else []
     )
@@ -92,7 +92,7 @@ if not os.path.exists("matched_jobs_skills.csv"):       # check if df is already
     # jobs_df[jobs_df["matched"]].to_csv("jobtitles_cleaned_matched.csv", index=False)
     # jobs_df[~jobs_df["matched"]].to_csv("jobtitles_cleaned_unmatched.csv", index=False)
 
-    ### merge jobs list and skills list by matching job link
+    # merge jobs list and skills list by matching job link
     jobs_df = jobs_df.drop_duplicates(subset=["job_link"])      # Make sure no job link is double
     skills_df = skills_df.drop_duplicates(subset=["job_link"])
 
