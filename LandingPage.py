@@ -12,7 +12,7 @@ import joblib
 import Dashboard
 from streamlit.runtime.scriptrunner import get_script_run_ctx
 
-st.set_page_config(page_title="Job Fit App", page_icon=":briefcase:", layout="wide")
+st.set_page_config(page_title="Personal JobMatcher", page_icon=":briefcase:", layout="wide")
 
 st.markdown("""
     <style>
@@ -82,7 +82,7 @@ def main():
         "Menu",
         (
             "Startseite",
-            "Personal Job Matcher",
+            "Personal JobMatcher",
             "Job Dashboard",
             "Klassische Job-Suche",
             "Gehaltsfinder",
@@ -99,7 +99,7 @@ def main():
     if st.session_state.page == "Startseite":
         st.markdown(f"""
             <div style="text-align: center; padding: 2rem 1rem;">
-                <h1 style="font-size: 3rem;">🚀 Willkommen bei der Personal Job Fit App</h1>
+                <h1 style="font-size: 3rem;">🚀 Willkommen bei deinem Personal JobMatcher</h1>
                 <p style="font-size: 1.3rem; color: darkgray;">Finde den Job, der wirklich zu dir passt – basierend auf deinen Skills, Interessen und Werten.</p>
             </div>
         """, unsafe_allow_html=True)
@@ -151,7 +151,7 @@ def main():
 
         with col2:
             st.markdown(f"""
-                <a href="/?page_redirect=Personal Job Matcher" target="_self" class="card-link">
+                <a href="/?page_redirect=Personal JobMatcher" target="_self" class="card-link">
                     <div class="feature-card">
                         <h3>🧠</p>Persönlicher Matcher</h3>
                         <p>Erhalte massgeschneiderte Jobvorschläge auf Basis deiner Skills.</p>
@@ -179,15 +179,15 @@ def main():
         st.markdown(f"""
             <div style="text-align: center; padding: 2rem;">
                 <h2 style="margin-bottom: 0.5rem;">Bereit, deinen Traumjob zu finden?</h2>
-                <p style="font-size: 1.1rem; color: #bbb;">Starte jetzt durch mit dem Personal Job Matcher.</p>
-                <a href="/?page_redirect=Personal Job Matcher" target="_self">
+                <p style="font-size: 1.1rem; color: #bbb;">Starte jetzt durch mit dem Personal JobMatcher.</p>
+                <a href="/?page_redirect=Personal JobMatcher" target="_self">
                     <button style="padding: 0.75rem 2rem; font-size: 1.1rem; background-color: #FF0000; color: white; border: none; border-radius: 8px; margin-top: 1rem;">🚀 Jetzt starten</button>
                 </a>
             </div>
         """, unsafe_allow_html=True)
 
     # Menü Bedienung
-    elif st.session_state.page == "Personal Job Matcher":
+    elif st.session_state.page == "Personal JobMatcher":
         PageOne.main()
     elif st.session_state.page == "Job Dashboard":
         Dashboard.main()
