@@ -19,7 +19,7 @@ branchen = ["Buchhaltung & Finanzwesen", "IT", "Vertrieb", "Kundendienst",
             "Kreation & Design", "Hochschulabsolventen", "Einzelhandel",
             "Beratung", "Fertigung", "Wissenschaft & Qualitätssicherung",
             "Sozialarbeit", "Tourismus", "Versorgungsunternehmen", 
-            "Immobilien", "Gemeinnützige & ehrenamtliche Arbeit", 
+            "Immobilien", "Gemeinnützige & ehrenamtliche Tätigkeiten", 
             "Haushaltshilfen & Reinigung", "Wartung", "Teilzeit", 
             "Sonstige/Allgemeine Stellen"
             ]
