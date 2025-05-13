@@ -139,9 +139,9 @@ def main():
                 """.format(
                     bg=st.session_state.sec_bg_color,
                     monat=st.session_state.df_salary["Monat"].max().strftime("%B %Y"),
-                    gehalt=f"{st.session_state.df_salary['Durchschnittsgehalt'].iloc[-1]:,.0f} CHF".replace(",", "."),
+                    gehalt=f"{st.session_state.df_salary['Durchschnittsgehalt'].iloc[-1]:,.0f} CHF".replace(",", "'"),
                     avg_gehalt=f"{statistics.mean(st.session_state.df_salary['Durchschnittsgehalt']):,.0f} CHF".replace(
-                        ",", ".")
+                        ",", "'")
                 ), unsafe_allow_html=True)
 
                 PageThree.gehaltsdiagramm(session_state.df_salary,

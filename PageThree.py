@@ -126,10 +126,10 @@ def gehaltssuche_anzeigen(df):
     with col1:
         # Anzeige der Gehaltsdaten( Letzter Moant, Gehalt zuletzt)
         st.metric("📅 Letzter Monat", df["Monat"].max().strftime("%B %Y"))
-        st.metric("💰 Gehalt zuletzt", f"{df['Durchschnittsgehalt'].iloc[-1]:,.0f} CHF".replace(",", "."))
+        st.metric("💰 Gehalt zuletzt", f"{df['Durchschnittsgehalt'].iloc[-1]:,.0f} CHF".replace(",", "'"))
     with col2:
         # Anzeige des Durchschnittsgehalts
-        st.metric("Durchschnittsgehalt", f"{statistics.mean(df['Durchschnittsgehalt']):,.0f} CHF".replace(",", "."))
+        st.metric("Durchschnittsgehalt", f"{statistics.mean(df['Durchschnittsgehalt']):,.0f} CHF".replace(",", "'"))
 
 def gehaltsdiagramm(df, auswahl, show_raw=True, dashboard=False):
     # Funktion Gehaltsdiagramm (Liniendiagramm)
