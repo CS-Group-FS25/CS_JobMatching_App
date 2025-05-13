@@ -12,13 +12,16 @@ url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 # Branchen zur Auswahl definieren
 branchen = ["Buchhaltung & Finanzwesen", "IT", "Vertrieb", "Kundendienst",
-            "Ingenieur", "Personal & Personalbeschaffung", "Gesundheit", "Gastronomie", "Marketing",
-            "Logistik", "Lehrer", "Bau", "Verwaltung", "Rechtswesen",
-            "Design", "Hochschulabsolventen", "Einzelhandel",
-            "Consulting", "Fertigung", "Wissenschaft",
-            "Sozialarbeit", "Tourismus", "Energy", "Immobilien",
-            "Gemeinnützige Arbeit", "Reinigung", "Instandhaltung",
-            "Teizeitstellen", "Sonstige"
+            "Techniker", "Personal & Personalbeschaffung", "Gesundheitswesen & Pflege", 
+            "Gastronomie & Catering", "PR, Werbung & Marketing",
+            "Logistik & Lagerhaltung", "Lehrberufe", "Handel & Bau", 
+            "Verwaltung", "Juristische Berufe",
+            "Kreation & Design", "Hochschulabsolventen", "Einzelhandel",
+            "Beratung", "Fertigung", "Wissenschaft & Qualitätssicherung",
+            "Sozialarbeit", "Tourismus", "Versorgungsunternehmen", 
+            "Immobilien", "Gemeinnützige & ehrenamtliche Arbeit", 
+            "Haushaltshilfen & Reinigung", "Wartung", "Teizeit", 
+            "Sonstige/Allgemeine Stellen"
             ]
 
 # Mapping zu Adzuna-Categories für die API-Abfrage
@@ -72,25 +75,38 @@ def datenverarbeitung(branche):
     raw_data = datenabfrage(category)
 
     if not raw_data or "month" not in raw_data:
-        return None
+        return pd.DataFrame(), category
+    
     salary_data = raw_data["month"]
+    
+    if not salary_data:
+        return pd.DataFrame(), category
+    
     # Überprüfen, ob die Gehaltsdaten in einem Dictionary-Format vorliegen
-    if isinstance(list(salary_data.values())[0], dict):
-        # Gehaltsdaten in DataFrame umwandeln
-        df = pd.DataFrame([
-            {
-                "Monat": month,
-                "Durchschnittsgehalt": werte.get("average"),
-                "Minimum": werte.get("min"),
-                "Maximum": werte.get("max")
-            }
-            for month, werte in salary_data.items()
-        ])
-    else:
-        df = pd.DataFrame([
-            {"Monat": month, "Durchschnittsgehalt": gehalt}
-            for month, gehalt in salary_data.items()
-        ])
+    try: 
+        if isinstance(list(salary_data.values())[0], dict):
+            # Gehaltsdaten in DataFrame umwandeln
+            df = pd.DataFrame([
+                {
+                    "Monat": month,
+                    "Durchschnittsgehalt": werte.get("average"),
+                    "Minimum": werte.get("min"),
+                    "Maximum": werte.get("max")
+                }
+                for month, werte in salary_data.items()
+            ])
+        else:
+            df = pd.DataFrame([
+                {"Monat": month, "Durchschnittsgehalt": gehalt}
+                for month, gehalt in salary_data.items()
+            ])
+    except Exception as e:
+        st.warning(f"Fehler bei der Umwandlung der Gehaltsdaten: {e}")
+        return pd.DataFrame(), category
+    
+    if df.empty or "Durchschnittsgehalt" not in df.columns:
+        return pd.DataFrame(), category
+    
     # Darstellung der Gehaltsdaten nach Monat sortiert
     df["Monat"] = pd.to_datetime(df["Monat"], format='%Y-%m')
     df = df.sort_values("Monat")
