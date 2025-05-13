@@ -20,7 +20,7 @@ branchen = ["Buchhaltung & Finanzwesen", "IT", "Vertrieb", "Kundendienst",
             "Beratung", "Fertigung", "Wissenschaft & Qualitätssicherung",
             "Sozialarbeit", "Tourismus", "Versorgungsunternehmen", 
             "Immobilien", "Gemeinnützige & ehrenamtliche Arbeit", 
-            "Haushaltshilfen & Reinigung", "Wartung", "Teizeit", 
+            "Haushaltshilfen & Reinigung", "Wartung", "Teilzeit", 
             "Sonstige/Allgemeine Stellen"
             ]
 
@@ -54,7 +54,7 @@ branchen_mapping = {
     "Haushaltshilfen & Reinigung": "domestic-help-cleaning-jobs",
     "Wartung": "maintenance-jobs",
     "Teilzeit": "part-time-jobs",
-    "Sonstige/Allgemeine Stellen": "other-jobs"
+    "Sonstige/Allgemeine Stellen": "other-general-jobs"
 }
 
 # Funktionen zur Spalte 1 - Gehaltsdaten
@@ -108,7 +108,7 @@ def datenverarbeitung(branche):
         return pd.DataFrame(), category
     
     # Darstellung der Gehaltsdaten nach Monat sortiert
-    df["Monat"] = pd.to_datetime(df["Monat"], format='%Y-%m')
+    df["Monat"] = pd.to_datetime(df["Monat"], format='%Y-%m', errors="coerce")
     df = df.sort_values("Monat")
     return df, category
 
@@ -250,7 +250,7 @@ def main():
     
     column1, column2 = st.columns(2)
     with (column1):
-        if st.session_state.df_salary is not None:
+        if st.session_state.df_salary is not None and not st.session_state.df_salary.empty:
             if "Durchschnittsgehalt_fmt" not in st.session_state.df_salary.columns:
                 st.session_state.df_salary["Durchschnittsgehalt_fmt"] = (
                     st.session_state.df_salary["Durchschnittsgehalt"]
