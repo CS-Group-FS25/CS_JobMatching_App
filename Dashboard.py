@@ -4,7 +4,6 @@ import folium
 from streamlit import session_state
 from streamlit_folium import st_folium
 import statistics
-
 import PageThree
 
 # Adzuna API Einrichten mit API ID und Schlüssel
@@ -13,9 +12,8 @@ APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 def run_job_search(job_title, location, results_per_page=10):
-    #if st.session_state["suche_gestartet"]:
     with st.spinner("Suche läuft..."):
-        ### notwendige Parameter für die API-Abfrage
+        # notwendige Parameter für die API-Abfrage
         params = {
             'app_id': APP_ID,
             'app_key': APP_KEY,
@@ -24,10 +22,10 @@ def run_job_search(job_title, location, results_per_page=10):
             'results_per_page': results_per_page,
             'content-type': 'application/json'
         }
-        ### Speichern der Antwort in einer Variablen
+        # Speichern der Antwort in einer Variablen
         response = requests.get(url, params=params)
 
-        if response.status_code == 200:  ### Wenn die API erfolgreich abgerufen wurde, wird die Antwort verarbeitet
+        if response.status_code == 200:  # Wenn die API erfolgreich abgerufen wurde, wird die Antwort verarbeitet
 
             data = response.json()
             results = data.get("results", [])
@@ -39,7 +37,8 @@ def run_job_search(job_title, location, results_per_page=10):
                 # Koordinaten für die Karte
                 longitude = job.get("longitude")
                 latitude = job.get("latitude")
-                if latitude is not None and longitude is not None:  ### Falls die Stellenanzeige Koordinaten ausgibt, werden diese für die Karte gespeichert
+                # Falls die Stellenanzeige Koordinaten ausgibt, werden diese für die Karte gespeichert
+                if latitude is not None and longitude is not None:
                     map_data.append({"lat": latitude, "lon": longitude})
 
             if map_data:
@@ -59,13 +58,14 @@ def run_job_search(job_title, location, results_per_page=10):
 
                     if lat and lon:
                         popup_html = f"<b>{title}</b><br>{company}<br><a href='{url}' target='_blank'>Zum Job</a>"
-                        folium.Marker(  ### Marker für jede Stellenanzeige auf der Karte
+                        # Marker für jede Stellenanzeige auf der Karte
+                        folium.Marker(
                             location=[lat, lon],
                             popup=folium.Popup(popup_html, max_width=250),
                             icon=folium.Icon(color="blue", icon="briefcase", prefix="fa")
                         ).add_to(job_map)
 
-                # Streamlit-Anzeige
+                # Streamlit-Anzeige der Map
                 st_folium(job_map, width=700, height=500)
 
                 for job in results:
@@ -83,25 +83,27 @@ def run_job_search(job_title, location, results_per_page=10):
             st.error(f"Fehler beim Abrufen der Daten: {response.status_code}")
 
 def main():
+    # Sicherstellen, dass persönlicher JobMatcher schon ausgefüllt wurde, damit alle notwendigen Daten
+    # für das Dashboard zur Verfügung stehen
     if st.session_state.clicked_job is not None:
         st.markdown(f"<h1 style='text-align: center;'>{st.session_state.job_titles_list[st.session_state.clicked_job].
                     upper()}</h1>", unsafe_allow_html=True)
 
-        col1, col2 = st.columns([2, 1.8])
+        col1, col2 = st.columns([2, 1.8])   # Seiten Layout mit zwei Spalten
 
-        # Left Column: Map and Job List
+        # Linke Spalte: Map und Job Liste
         with col1:
             st.markdown("<br>", unsafe_allow_html=True)
             st.markdown("### Job Möglichkeiten in deiner Region")
             run_job_search(st.session_state.job_titles_list[st.session_state.clicked_job],
                            st.session_state.profil.location)
 
-        # Rechte Spalte: Tabs mit Salary Übersicht und Top 5 Job Übersicht
+        # Rechte Spalte: Tabs mit Gehaltsübersicht und Top 5 Jobs
         with col2:
             st.markdown("<br>", unsafe_allow_html=True)
             tab1, tab2 = st.tabs(["Gehaltsübersicht", "Top 5 Jobs"])
 
-            # Salary Logik
+            # Tab 1 mit Gehaltübersicht
             with tab1:
                 # Lade df_salary, category, histogram_data falls main() von PageThree (Gehaltsfinder) noch nicht
                 # ausgeführt wurde, da sonst df_salary nicht definiert ist
@@ -119,6 +121,7 @@ def main():
                 ):
                     st.session_state.histogram_data = PageThree.datenabfrage_verteilung(st.session_state.category)
 
+                    # Design der Gehaltsübersicht
                     st.markdown("""
                 <div style="background-color: {bg}; padding: 20px 20px 10px 20px; border-radius: 10px;">
                     <h4 style="text-align: center;">📊 Gehaltsübersicht</h4>
@@ -147,8 +150,10 @@ def main():
                                           True)
                 PageThree.zeige_gehaltshistogramm(st.session_state.histogram_data, True)
 
+            # Tab 2 mit Auflistung der Top 5 Jobs
             with tab2:
                 st.markdown("### Your Top 5 Jobs")
+                # Hervorheben des aktuell ausgewählten Jobs
                 for i in range(0, 5):
                     if i == st.session_state.clicked_job:
                         st.button(

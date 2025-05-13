@@ -1,17 +1,3 @@
-import streamlit as st
-
-def create_cluster_to_meta_mapping(skill_categories, clustered_skills_df):
-    skill_to_category = {}
-    for category, skills in skill_categories.items():
-        for skill in skills:
-            skill_to_category[skill] = category
-    skill_to_cluster = dict(zip(clustered_skills_df["skill"], clustered_skills_df["cluster"]))
-    cluster_to_meta = {}
-    for skill, cluster in skill_to_cluster.items():
-        if skill in skill_to_category:
-            cluster_to_meta[cluster] = skill_to_category[skill]
-    return cluster_to_meta
-
 skill_categories = {
         "Analytik & Problemlösung": [
             "data modeling", "problemsolving skills", "mathematical calculations", "testing", "critical thinking",
@@ -69,5 +55,3 @@ skill_categories = {
             "flexible work schedule"
         ]
     }
-
-# cluster_to_meta = create_cluster_to_meta_mapping(skill_categories, st.session_state.clustered_skills_df)

@@ -1,5 +1,4 @@
 import streamlit as st
-import numpy as np
 import requests
 import statistics
 import pandas as pd
@@ -57,8 +56,9 @@ branchen_mapping = {
     "Sonstige/Allgemeine Stellen": "other-general-jobs"
 }
 
-# Funktionen zur Spalte 1 - Gehaltsdaten
-def datenabfrage(category):  # API-Abfrage zu Gehaltsdaten
+def datenabfrage(category):
+    # API-Abfrage zu Gehaltsdaten
+
     # API-Request
     url = f"https://api.adzuna.com/v1/api/jobs/ch/history?app_id={APP_ID}&app_key={APP_KEY}&category={category}"
     response = requests.get(url)
@@ -68,8 +68,9 @@ def datenabfrage(category):  # API-Abfrage zu Gehaltsdaten
         st.write(f"Fehler in der Datenverarbeitung:{response.status_code}")
         return None
 
-# Funktion zur Datenverarbeitung
 def datenverarbeitung(branche):
+    # Funktion zur Datenverarbeitung
+
     category = branchen_mapping[branche]
     # Speichern der API-Daten in einer Variablen
     raw_data = datenabfrage(category)
@@ -112,12 +113,14 @@ def datenverarbeitung(branche):
     df = df.sort_values("Monat")
     return df, category
 
-# Funktion zur Formatierung des Gehalts
 def gehalt_formatierung(value):
+    # Funktion zur Formatierung des Gehalts
+
     return f"{value:,.0f} CHF".replace(",", ".") if pd.notnull(value) else "k.A."
 
-# Funktion zur Anzeige der Gehaltsdaten
 def gehaltssuche_anzeigen(df):
+    # Funktion zur Anzeige der Gehaltsdaten
+
     # Zwei Spalten für die Anzeige der Gehaltsdaten
     col1, col2 = st.columns(2)
     with col1:
@@ -128,8 +131,9 @@ def gehaltssuche_anzeigen(df):
         # Anzeige des Durchschnittsgehalts
         st.metric("Durchschnittsgehalt", f"{statistics.mean(df['Durchschnittsgehalt']):,.0f} CHF".replace(",", "."))
 
-# Funktion Gehaltsdiagramm (Liniendiagramm)
 def gehaltsdiagramm(df, auswahl, show_raw=True, dashboard=False):
+    # Funktion Gehaltsdiagramm (Liniendiagramm)
+
     if "Durchschnittsgehalt_fmt" not in st.session_state.df_salary.columns:
         st.session_state.df_salary["Durchschnittsgehalt_fmt"] = (st.session_state.df_salary
                                                                  ["Durchschnittsgehalt"]
@@ -159,8 +163,9 @@ def gehaltsdiagramm(df, auswahl, show_raw=True, dashboard=False):
                          use_container_width=True)
 
 
-# Funktionen zur Spalte 2 - Gehaltsverteilung
-def datenabfrage_verteilung(category):  ### API-Abfrage zu Gehaltsverteilung
+def datenabfrage_verteilung(category):
+    # API-Abfrage zu Gehaltsverteilung
+
     url = f"http://api.adzuna.com/v1/api/jobs/ch/histogram?app_id={APP_ID}&app_key={APP_KEY}&category={category}&content-type=application/json"
 
     response = requests.get(url)
@@ -236,11 +241,11 @@ def zeige_gehaltshistogramm(histogram_data, dashboard=False):
         )
         st.plotly_chart(fig, use_container_width=True)
 
-# Abruf der Hauptfunktion
 def main():
     st.title("Gehaltssuche nach Branche")
     st.subheader("Finde heraus, wie viel du in deiner Branche verdienen kannst!")
     auswahl = st.selectbox("Wähle eine Branche", branchen)
+
     category = branchen_mapping[auswahl]
     
     if st.session_state.get("category") != category:
@@ -260,8 +265,7 @@ def main():
             gehaltsdiagramm(st.session_state.df_salary, auswahl)
         else: 
             st.warning("Keine Gehaltsdaten verfügbar. Bitte eine andere Branche auswählen.")    
-        
-        
+
     with column2:
         if st.session_state.histogram_data:
             zeige_gehaltshistogramm(st.session_state.histogram_data)

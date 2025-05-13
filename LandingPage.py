@@ -2,15 +2,12 @@ import streamlit as st
 import pandas as pd
 import os
 import toml
-import PageOne
-import PageDashboardTest
-import PageTwo
-import PageFour
-import PageTestML
-import PageThree
 import joblib
+import PageOne
+import PageTwo
+import PageThree
+import PageFour
 import Dashboard
-from streamlit.runtime.scriptrunner import get_script_run_ctx
 
 st.set_page_config(page_title="Personal JobMatcher", page_icon=":briefcase:", layout="wide")
 
@@ -86,9 +83,7 @@ def main():
             "Job Dashboard",
             "Klassische Job-Suche",
             "Gehaltsfinder",
-            "Über uns",
-            "ML Test",
-            "Dashboard Test"
+            "Über uns"
         ),
         key="page"
     )
@@ -197,10 +192,5 @@ def main():
         PageThree.main()
     elif st.session_state.page == "Über uns":
         PageFour.main()
-    elif st.session_state.page == "ML Test":
-        PageTestML.main()
-    elif st.session_state.page == "Dashboard Test":
-        PageDashboardTest.main()
-
 
 main()

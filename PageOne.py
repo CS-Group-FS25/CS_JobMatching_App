@@ -2,13 +2,14 @@ import ast
 import streamlit as st
 import pandas as pd
 import requests
-import Dashboard
-import SkillCategories
 import numpy as np
-import altair as alt
+import SkillCategories
 
+# Adzuna API Einrichten mit API ID und Schlüssel
+APP_ID = "42d55acf"
+APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 
-### Benutzprofil als Klasse definieren
+# Benutzprofil als Klasse definieren
 class Benutzerprofil:
     def __init__(self, alter, location, branche, abschluss, akademisches_niveau, berufserfahrung, arbeitszeit, skills):
         self.alter = alter
@@ -22,20 +23,22 @@ class Benutzerprofil:
 
 
 def styled_multiselect(label, options, key):
+    # Allgemeine Definition für ein einheitliches Design von Dropdownmenus
     st.markdown(f"<div style='min-height: 3em'><strong>{label}</strong></div>", unsafe_allow_html=True)
     return st.multiselect("", options, key=key)
 
-
-### Funktion der Profilerstellung und der Datenabfrage
 def datenabfrage():
-    ### Willkommen + Abfrage der Daten
-    st.title("Dein Persönlicher JobMatcher")
-    st.header("Kreiere zuerst dein persönliches Profil")
+    # Funktion der Profilerstellung und der Datenabfrage
 
+    st.title("Dein Persönlicher JobMatcher")
+    st.header("Erstelle dein persönliches Profil")
+
+    # Abfrage der Daten durch User Inputs
     Alter = st.text_input("Bitte gebe dein Alter ein")
     Location = st.text_input("In welcher Region suchst du nach einem Job?")
     Branche = st.selectbox("In welcher Branche möchtest Du arbeiten?", st.session_state.industries)
     Bildungsabschluss = st.radio("Hast du einen Bildungsabschluss?", options=("Ja", "Nein"), horizontal=True)
+    # Optionale Auswahlmöglichkeit falls ein Bildungsabschluss vorliegt
     if Bildungsabschluss == "Ja":
         Akademisches_Niveau = st.radio("Welche Ausbildung haben Sie?", ("Schulabschluss", "Ausbildung", "Studium",))
     Berufserfahrung = st.selectbox("Wie viel Berufserfahrung haben Sie?",
@@ -44,7 +47,9 @@ def datenabfrage():
 
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("Wähle deine Skills aus:")
-    cols = st.columns(5)  # Erstellung von 5 Spalten für die Dropdown Menüs der Skills
+    # Erstellung von 5 Spalten für die Dropdown Menüs der Skills
+    cols = st.columns(5)
+    # Abfrage der Skill Kategorien aus SkillCategories.py
     category_names = list(SkillCategories.skill_categories.keys())
 
     selected_skills_by_cat = {}
@@ -56,6 +61,7 @@ def datenabfrage():
         with cols_row1[i]:
             selected = styled_multiselect(cat, SkillCategories.skill_categories[cat], key=cat)
             if selected:
+                # Ausgewählte Skills werden gespeichert
                 selected_skills_by_cat[cat] = selected
 
     st.markdown("<hr style='height:2px;border:none;color:#333;background-color:#333;'>", unsafe_allow_html=True)
@@ -67,9 +73,10 @@ def datenabfrage():
         with cols_row2[i - 5]:
             selected = styled_multiselect(cat, SkillCategories.skill_categories[cat], key=cat)
             if selected:
+                # Ausgewählte Skills werden gespeichert
                 selected_skills_by_cat[cat] = selected
 
-    ### aktuelles Profil speichern
+    # aktuelles Profil speichern
     profil = Benutzerprofil(
         alter=Alter,
         location=Location,
@@ -81,7 +88,7 @@ def datenabfrage():
         skills=selected_skills_by_cat
     )
 
-    ### Profil anzeigen unterhalb der Eingabefelder
+    # Profil anzeigen unterhalb der Eingabefelder
     with st.expander("Profil anzeigen"):
         st.markdown(f"""
         **Alter:** {profil.alter}
@@ -95,21 +102,16 @@ def datenabfrage():
         """)
     return profil
 
-
-# Adzuna API Einrichten mit API ID und Schlüssel
-APP_ID = "42d55acf"
-APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
-
-
 def job_suchen(job_title, profil):
-    url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'  # Adzuna API für die Schweiz
+    # Adzuna API URL für die Schweiz; Durch Abänderung des Länderkürzels auch Abfrage von anderen Ländern möglich
+    url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
     # Notwendige Eingaben für die Suche
     parameter = {
         'app_id': APP_ID,
         'app_key': APP_KEY,
-        'what': job_title,  # Jobtitel (richtig benannt)
-        'where': profil.location  # Region (richtig benannt)
+        'what': job_title,  # Jobtitel
+        'where': profil.location  # Region
     }
 
     # Adzuna API anfragen über requests
@@ -119,7 +121,7 @@ def job_suchen(job_title, profil):
     if response.status_code == 200:
         job_daten = response.json()
 
-        ### Überprüfen, ob Jobs gefunden werden
+        # Überprüfen, ob Jobs gefunden werden
         if job_daten['results']:
             st.write(f"Gefundene Jobs in {profil.location} für {job_title}:")
             for job in job_daten['results']:  # Ändere 'jobs' zu 'job'
@@ -136,15 +138,17 @@ def job_suchen(job_title, profil):
     else:
         st.write(f"Fehler bei der API-Anfrage: {response.status_code}")
 
-
 def predict_job(selected_skills, branche):
-    # Suche die Cluster IDs der ausgewählten Skills aus Dataframe und speicher diese in einer Liste
+    # Diese Funktion sagt basierend auf dem trainierten ML Model durch den User Input (Branche und Skills)
+    # das passende Job Cluster voraus
+
+    # Speichern der Skill Cluster IDs der ausgewählten Skills durch Abfrage aus dem Dataframe
     matched_clusters = st.session_state.clustered_skills_df[st.session_state.clustered_skills_df["skill"]
     .isin(selected_skills)]["cluster"].unique().tolist()
 
-    # Alle 150 Cluster IDs sortiert
+    # Alle 150 Skill Cluster IDs sortiert speichern
     all_clusters = sorted(st.session_state.clustered_skills_df["cluster"].unique())
-    # Erstellung binären Vektors gemäss von Nutzer ausgewählten Skills
+    # Erstellung eines binären Vektors gemäss von Nutzer ausgewählten Skills
     feature_vector = [1 if cluster in matched_clusters else 0 for cluster in all_clusters]
 
     industry_df = pd.DataFrame([[branche]], columns=["industry"])
@@ -159,38 +163,41 @@ def predict_job(selected_skills, branche):
 
     return representative_job_list(predicted_job_cluster)
 
-
 def representative_job_list(predicted_job_cluster):
+    # Für das vorhergesagte Job Cluster werden representative Jobs aus dem Dataframe ausgewählt
+
+    # Es werden die zum vorhergesagten Job Cluster passende Zeile aus dem Dataframe ausgewählt
     job_cluster_row = st.session_state.industry_df[
         st.session_state.industry_df[
-            "cluster_id"] == predicted_job_cluster]  # Es werden die zum vorhergesagten Job Cluster passende Zeile aus dem Dataframe ausgewählt
+            "cluster_id"] == predicted_job_cluster]
 
     if not job_cluster_row.empty:
-        job_titles_str = job_cluster_row["example_titles"].values[
-            0]  # Die Liste mit den 5 häufigsten Jobs des ausgewählten Job Clusters wird gespeichert
-        job_titles_list = ast.literal_eval(job_titles_str)  # Umwandlung des Strings in eine Python Liste
+        # Die Liste mit den 5 häufigsten Jobs des ausgewählten Job Clusters wird gespeichert
+        job_titles_str = job_cluster_row["example_titles"].values[0]
+        # Umwandlung des Strings in eine Python Liste
+        job_titles_list = ast.literal_eval(job_titles_str)
         return job_titles_list
     else:
         st.warning("Das vorhergesagte Job Cluster beinhaltet keine Jobs.")
         return None
 
-
-# Aufbau der Jobsuche
 def main():
     st.session_state.profil = datenabfrage()
+
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>Finde Deine Top 5 Jobs</h3>", unsafe_allow_html=True)
-    center_col = st.columns([6, 3, 6])[1]
+
+    center_col = st.columns([6, 3, 6])[1]   # Aktuelle Zwischenlösung um folgenden Button zu zentrieren
     with center_col:
         st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
         clicked = st.button("🔍 Suche starten")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # LOGIK NACH BUTTON-CLICK
     if clicked:
-        selected_skills = [skill for skills in st.session_state.profil.skills.values() for skill in
-                           skills]  # Speichere das Dictionary selected_skills_by_cat in eine flache Liste
+        # Speichere das Dictionary selected_skills_by_cat in eine flache Liste
+        selected_skills = [skill for skills in st.session_state.profil.skills.values() for skill in skills]
 
+        # Wichtig, da dass trainierte ML Modell mindestens einen Skill Input braucht
         if not selected_skills or not st.session_state.profil.branche:
             st.warning("Bitte wähle mindestens einen Skill und die Branche aus.")
         else:
@@ -201,18 +208,18 @@ def main():
         st.markdown("<hr style='height:2px;border:none;color:#333;background-color:#333;'>",
                     unsafe_allow_html=True)
         st.markdown("<div style='text-align: center;'><h3>DEINE TOP 5 JOBS</h3></div>", unsafe_allow_html=True)
-        st.markdown("<div style='text-align: center;'><h5>Klicke auf einen Job für weitere Details</h5></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><h5>Klicke auf einen Job für weitere Details</h5></div>",
+                    unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
         jobs = st.session_state.job_titles_list[-5:]
-        heights = [200, 140, 90, 60, 30]  # Beispiel-Höhen für Balken
+        heights = [200, 140, 90, 60, 30]  # Höhe der einzelnen Balken
         max_height = max(heights) + 40
 
         sorted_indices = np.argsort(heights)[::-1]
         medals = {sorted_indices[0]: "🥇", sorted_indices[1]: "🥈", sorted_indices[2]: "🥉"}
 
         cols = st.columns(5)
-
         for i, col in enumerate(cols):
             with col:
                 # Balken mit Medaillen
