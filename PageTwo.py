@@ -3,16 +3,19 @@ import requests
 import folium
 from streamlit_folium import st_folium
 
+#Für das Beheben von Bugs wurde ChatGPt zur hilfe genommen
+
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
 url = f'https://api.adzuna.com/v1/api/jobs/ch/search/1'
 
 
-#Funktion für Reverse-Geocoding
+
 def get_postcode_from_coords_or_name(job):
+    #Funktion für Reverse-Geocoding
     ort = job["location"].get("display_name")
-    if ort:  # Wenn ein Ort vorhanden ist, wird über die Nominatim API die PLZ abgerufen
+    if ort:  # Wenn ein Ort ausgegeben wird, wird die Plz gesucht und ausgegeben
         nominatim_url = "https://nominatim.openstreetmap.org/search"
         params = {
             "q": ort,
@@ -21,9 +24,9 @@ def get_postcode_from_coords_or_name(job):
             "limit": 1
         }
         headers = {"User-Agent": "streamlit-job-app"}
-        r = requests.get(url, params=params, headers=headers)
-        if r.status_code == 200 and r.json():  # Bei erfolgreicher Abfrage wird die PLZ zurückgegeben
-            data = r.json()[0] # speichern der Antwort in einer Variablen
+        plz = requests.get(url, params=params, headers=headers)
+        if plz.status_code == 200 and plz.json():  # Bei erfolgreicher Abfrage wird die PLZ zurückgegeben
+            data = plz.json()[0] # speichern der Antwort in einer Variablen
             return data.get("address", {}).get("postcode", "PLZ nicht gefunden")
     return "PLZ nicht verfügbar" 
 
@@ -90,13 +93,13 @@ def main():
                         st.write(job.get("description", "")[:300] + "...")
                         st.markdown(f"[🔗 Zum Job]({job.get('redirect_url')})")
 
-                    # PLz filtern
-                    plz = get_postcode_from_coords_or_name(job)
-                    # st.write("📮 PLZ:", plz)
+                    # PLz ausgeben
+                    Postleitzahl = get_postcode_from_coords_or_name(job)
+                    st.write("📮 PLZ:", Postleitzahl)
                 with column2:  # Spalte 2 mit Darstellung der Karte
                     if map_data:
                         st.title(" Interaktive Karte")
-
+                        # Für die Darstellung der Karte wurde ChatGPT zur Hilfe genommen
                         center_lat = map_data[0]["lat"]
                         center_lon = map_data[0]["lon"]
                         job_map = folium.Map(
@@ -112,6 +115,7 @@ def main():
                             nominatim_url = job.get("redirect_url", "#")
                             
                             # Wenn es Daten für die Karte gibt, werden diese angezeigt
+                            
                             if lat and lon:
                                 popup_html = f"<b>{title}</b><br>{company}<br><a href='{url}' target='_blank'>Zum Job</a>"
                                 folium.Marker(  # Marker für jede Stellenanzeige auf der Karte

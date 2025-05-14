@@ -4,6 +4,8 @@ import statistics
 import pandas as pd
 import plotly.express as px
 
+# Für das Beheben von Bugs wurde ChatGPT zur Hilfe genommen
+
 # Adzuna API Einrichten mit API ID und Schlüssel
 APP_ID = "42d55acf"
 APP_KEY = "2fde9c1ff58d9bfdf254dd3f0c4d6ec7"
@@ -57,7 +59,7 @@ branchen_mapping = {
 }
 
 def datenabfrage(category):
-    # API-Abfrage zu Gehaltsdaten
+    # Funktion zur API-Abfrage
 
     # API-Request
     url = f"https://api.adzuna.com/v1/api/jobs/ch/history?app_id={APP_ID}&app_key={APP_KEY}&category={category}"
@@ -68,9 +70,9 @@ def datenabfrage(category):
         st.write(f"Fehler in der Datenverarbeitung:{response.status_code}")
         return None
 
+
 def datenverarbeitung(branche):
     # Funktion zur Datenverarbeitung
-
     category = branchen_mapping[branche]
     # Speichern der API-Daten in einer Variablen
     raw_data = datenabfrage(category)
@@ -83,7 +85,7 @@ def datenverarbeitung(branche):
     if not salary_data:
         return pd.DataFrame(), category
     
-    # Überprüfen, ob die Gehaltsdaten in einem Dictionary-Format vorliegen
+    # Überprüfen, ob die Gehaltsdaten in einem Dictionary vorliegen
     try: 
         if isinstance(list(salary_data.values())[0], dict):
             # Gehaltsdaten in DataFrame umwandeln
@@ -113,13 +115,15 @@ def datenverarbeitung(branche):
     df = df.sort_values("Monat")
     return df, category
 
+
 def gehalt_formatierung(value):
     # Funktion zur Formatierung des Gehalts
 
     return f"{value:,.0f} CHF".replace(",", ".") if pd.notnull(value) else "k.A."
 
+
 def gehaltssuche_anzeigen(df):
-    # Funktion zur Anzeige der Gehaltsdaten
+   # Funktion zur Anzeige der Gehaltsdaten
 
     # Zwei Spalten für die Anzeige der Gehaltsdaten
     col1, col2 = st.columns(2)
