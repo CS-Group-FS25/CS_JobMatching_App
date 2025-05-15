@@ -45,8 +45,7 @@ if "industry_df" not in st.session_state:
 if "clustered_skills_df" not in st.session_state:
     st.session_state.clustered_skills_df = pd.read_parquet("DataHandling/clustered_skills.parquet")
 if "model" not in st.session_state or "industry_encoder" not in st.session_state:
-    st.session_state.model, st.session_state.industry_encoder = (
-        joblib.load("DataHandling/trained_random_forest_with_industry.pkl"))
+    st.session_state.model = joblib.load("DataHandling/trained_random_forest_skills_only.pkl")
 if "clicked_job" not in st.session_state:
     st.session_state.clicked_job = None
 

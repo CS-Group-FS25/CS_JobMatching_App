@@ -259,7 +259,7 @@ else:
 
 ### MACHINE LEARNING LOGIC
 
-if not os.path.exists("trained_random_forest_with_industry.pkl") or v4_in_place == False:
+if not os.path.exists("trained_random_forest_skills_only.pkl") or v4_in_place == False:
     print("Training Model using Random Forest...")
     max_depth = 12     # depth of decision trees
     n_estimators = 75  # amount of decision trees
@@ -273,25 +273,26 @@ if not os.path.exists("trained_random_forest_with_industry.pkl") or v4_in_place 
     merged_df = pd.merge(filtered_vectors_df, industry_df, on="cluster_id", how="left")
     merged_df.to_csv("FinalFileForML.csv")
 
-    x = merged_df.drop(columns=["cluster_id", "industry", "job_title", "example_titles"], errors="ignore")
-    x = x.loc[:, ~x.columns.str.contains("Unnamed")]
+    # Altes x wo Industry noch berücksichtigt wurde
+    # x = merged_df.drop(columns=["cluster_id", "industry", "job_title", "example_titles"], errors="ignore")
+    # x = x.loc[:, ~x.columns.str.contains("Unnamed")]
+
+    x = merged_df[[col for col in merged_df.columns if col.startswith("cluster_") and col != "cluster_id"]]
     y = LabelEncoder().fit_transform(merged_df["cluster_id"])
 
+    # Alte Industry Logik
+    # one_hot = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+    # industry_encoded = one_hot.fit_transform(merged_df[["industry"]])
+    # print(type(industry_encoded))  # muss: <class 'numpy.ndarray'>
+    # print(industry_encoded.dtype)  # muss: float64 oder int64
+    # print(industry_encoded.shape)  # sollte (n_rows, n_industries) sein
+    # x_combined = np.hstack([x.values, industry_encoded])
 
-    one_hot = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
-    industry_encoded = one_hot.fit_transform(merged_df[["industry"]])
-
-    print(type(industry_encoded))  # muss: <class 'numpy.ndarray'>
-    print(industry_encoded.dtype)  # muss: float64 oder int64
-    print(industry_encoded.shape)  # sollte (n_rows, n_industries) sein
-
+    # Überprüfe type and shape für debugging
     print(x.dtypes)  # Alles sollte float oder int sein
-
     print(x.columns)
 
-    x_combined = np.hstack([x.values, industry_encoded])
-
-    x_train, x_test, y_train, y_test = train_test_split(x_combined, y, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.05, random_state=42)
 
     modelRFC = RandomForestClassifier(
         n_estimators=n_estimators,
@@ -309,10 +310,10 @@ if not os.path.exists("trained_random_forest_with_industry.pkl") or v4_in_place 
     relevant_labels = list(labels_in_test & labels_predicted)
 
     rfc_performance = classification_report(y_test, y_pred, labels=relevant_labels)
-    with open("rfc_performance_report.txt", "w") as f:  # Save performance report of trained model in txt file
+    with open("rfc_performance_report_skills_only.txt", "w") as f:  # Save performance report of trained model in txt file
         f.write(rfc_performance)
 
-    joblib.dump((modelRFC, one_hot), "trained_random_forest_with_industry.pkl")
+    joblib.dump(modelRFC, "trained_random_forest_skills_only.pkl")
 
     # Confusion Matrix
     conf_mat = confusion_matrix(y_test, y_pred, labels=relevant_labels, normalize='true')
@@ -322,10 +323,13 @@ if not os.path.exists("trained_random_forest_with_industry.pkl") or v4_in_place 
     plt.xlabel("Predicted Labels")
     plt.ylabel("True Labels")
     plt.tight_layout()
-    plt.savefig("confusion_matrix.png")
+    plt.savefig("confusion_matrix_skills_only.png")
     plt.close()
 
+    model = joblib.load("trained_random_forest_skills_only.pkl")
+    print("This model needs ", model.n_features_in_, " inputs.")
     print("Training finished")
 else:
     print("Model is already trained")
-    modelRFC = joblib.load("trained_random_forest_with_industry.pkl")
+    model = joblib.load("trained_random_forest_skills_only.pkl")
+    print("This model needs ", model.n_features_in_, " inputs.")

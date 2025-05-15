@@ -139,7 +139,7 @@ def job_suchen(job_title, profil):
         st.write(f"Fehler bei der API-Anfrage: {response.status_code}")
 
 def predict_job(selected_skills, branche):
-    # Diese Funktion sagt basierend auf dem trainierten ML Model durch den User Input (Branche und Skills)
+    # Diese Funktion sagt basierend auf dem trainierten ML Model durch den User Input (Skills)
     # das passende Job Cluster voraus
 
     # Speichern der Skill Cluster IDs der ausgewählten Skills durch Abfrage aus dem Dataframe
@@ -151,25 +151,44 @@ def predict_job(selected_skills, branche):
     # Erstellung eines binären Vektors gemäss von Nutzer ausgewählten Skills
     feature_vector = [1 if cluster in matched_clusters else 0 for cluster in all_clusters]
 
-    industry_df = pd.DataFrame([[branche]], columns=["industry"])
+    # Alte Industry Logik
+    # industry_df = pd.DataFrame([[branche]], columns=["industry"])
     # Von Nutzer ausgewählte Branche wird als One-Hot-Vektor dargestellt
-    industry_onehot = st.session_state.industry_encoder.transform(industry_df)[0]
-
+    # industry_onehot = st.session_state.industry_encoder.transform(industry_df)[0]
     # Verknüpfung von Skill-Vektor mit Branchen-Vektor
-    x_input = np.array(feature_vector + list(industry_onehot)).reshape(1, -1)
+    # x_input = np.array(feature_vector + list(industry_onehot)).reshape(1, -1)
 
-    # Das trainierte Model gibt das wahrscheinlichste der 500 Job Cluster für den User zurück
-    predicted_job_cluster = st.session_state.model.predict(x_input)[0]
+    # Neue Industry Logik - Alle Cluster-IDs speichern, welche zur ausgewählten Branche gehören
+    branchen_cluster_ids = st.session_state.industry_df[
+        st.session_state.industry_df["industry"] == branche]["cluster_id"].unique()
 
-    return representative_job_list(predicted_job_cluster)
+    # Array mit Wahrscheinlichkeiten für jedes Job Cluster
+    job_cluster_probs = st.session_state.model.predict_proba(np.array(feature_vector).reshape(1, -1))[0]
+
+    # Dictionary mit Job Cluster-ID und zugehöriger Wahrscheinlichkeit für alle Job Cluster in der ausgewählten Branche
+    cluster_prob_dict = {i: job_cluster_probs[i] for i in branchen_cluster_ids if i < len(job_cluster_probs)}
+
+    # Auswahl des Job Clusters mit der höchsten Wahrscheinlichkeit aus den Job Cluster in der der ausgewählten Branche
+    if cluster_prob_dict:
+        best_cluster = max(cluster_prob_dict, key=cluster_prob_dict.get)
+    else:
+        st.warning("Keine passenden Job Cluster für die gewählte Branche gefunden.")
+        return None
+
+    # Input für die Prediction im ML Model sind die 150 Skill Cluster
+    x_input = np.array(feature_vector).reshape(1, -1)
+
+    return representative_job_list(best_cluster)
 
 def representative_job_list(predicted_job_cluster):
     # Für das vorhergesagte Job Cluster werden representative Jobs aus dem Dataframe ausgewählt
 
-    # Es werden die zum vorhergesagten Job Cluster passende Zeile aus dem Dataframe ausgewählt
+    # Es werden die zum vorhergesagten Job Cluster und zur optional gewählten Branche passende Zeile aus
+    # dem Dataframe ausgewählt
     job_cluster_row = st.session_state.industry_df[
-        st.session_state.industry_df[
-            "cluster_id"] == predicted_job_cluster]
+        (st.session_state.industry_df["cluster_id"] == predicted_job_cluster) &
+        (st.session_state.industry_df["industry"] == st.session_state.profil.branche)
+    ]
 
     if not job_cluster_row.empty:
         # Die Liste mit den 5 häufigsten Jobs des ausgewählten Job Clusters wird gespeichert
@@ -204,7 +223,7 @@ def main():
             job_titles_list = predict_job(selected_skills, st.session_state.profil.branche)
             st.session_state.job_titles_list = job_titles_list
 
-    if "job_titles_list" in st.session_state:
+    if "job_titles_list" in st.session_state and st.session_state.job_titles_list is not None:
         st.markdown("<hr style='height:2px;border:none;color:#333;background-color:#333;'>",
                     unsafe_allow_html=True)
         st.markdown("<div style='text-align: center;'><h3>DEINE TOP 5 JOBS</h3></div>", unsafe_allow_html=True)
@@ -250,4 +269,5 @@ def main():
                 if st.button(f"{jobs[i]}", key=f"job_button_{i}"):
                     st.session_state.page_redirect = "Job Dashboard"
                     st.session_state.clicked_job = i
+                    st.session_state.rerun = True
                     st.rerun()
