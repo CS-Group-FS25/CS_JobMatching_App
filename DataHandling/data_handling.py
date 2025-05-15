@@ -3,12 +3,11 @@ import re
 import os
 from collections import Counter
 import ast
-import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import joblib
@@ -16,14 +15,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
-
+# LinkedIn Job Posting Datensätze werden geladen (Herkunft: siehe Readme File)
 skills_df = pd.read_csv("job_skills.csv", usecols=["job_link", "job_skills"])
 jobs_df = pd.read_csv("linkedin_job_postings.csv", usecols=["job_link", "job_title", "search_position"])
 
 
-uncleaned_title = [] # only for testing - delete later!
+uncleaned_title = [] # Nicht zugeordnete Job Titel
 
 def extract_job_core(title):
+    # Extraktion des Job Cores basierend auf keyword Definition. Damit wird sicher gestellt, dass nur tatsächliche
+    # Job Titel verwendet werden und weitere Schlagwörter, welche sich im Titel von LinkedIn Posts befinden
+    # (z.B. "dringend gesucht"), nicht weiter berücksichtigt werden
     separators = r"[-–•|/,.\s]{2,}"
     title = str(title).lower()
     parts = re.split(separators, title)
@@ -34,11 +36,14 @@ def extract_job_core(title):
             if keyword in part:
                 return part.title()
     uncleaned_title.append(title)
-    return title.title()    # Default return when no keyword is found
+    return title.title()    # Default return falls kein Keyword enthalten ist
 
-def skills_to_clusters(skill_list):     # Matches a cluster to every skill in the skill list of each job
+def skills_to_clusters(skill_list):
+    # Jedem Skill in der Skill Liste eines Jobs wird das passende Skill Cluster zugeordnet
     return list({cluster_map[s] for s in skill_list if s in cluster_map})
 
+# Definierte Keywords um tatsächlichen Job Titel aus den Daten auslesen zu können. Diese Keywords entsprechen den
+# häufigsten sinnvollen Job Keywords welche in dem Datensatz vorkamen
 job_keywords = [
         "engineer", "developer", "manager", "designer", "consultant", "analyst",
         "specialist", "technician", "coordinator", "director", "officer",
@@ -60,19 +65,18 @@ job_keywords = [
 ### CREATE DATAFRAME
 
 v1_in_place = False
-if not os.path.exists("matched_jobs_skills.csv"):       # check if df is already in place; if not, create df
+if not os.path.exists("matched_jobs_skills.csv"):
     print("Create new data frame with jobs and skills by merging both data sets")
 
-    # clear list of empty entries and duplicates
     skills_df = skills_df.dropna().drop_duplicates()
     jobs_df = jobs_df.dropna().drop_duplicates()
 
-    # normalize skills list
+    # Normalisierung der Skills
     skills_df['job_skills_cleaned'] = skills_df['job_skills'].apply(
         lambda x: [s.strip().lower() for s in str(x).split(',')] if pd.notnull(x) else []
     )
 
-    ### clean job title
+    # Job Title Bereinigung
     jobs_df["job_title_cleaned"] = jobs_df["job_title"].apply(extract_job_core)
     print(uncleaned_title)
     print(len(uncleaned_title))
@@ -89,13 +93,10 @@ if not os.path.exists("matched_jobs_skills.csv"):       # check if df is already
         lambda t: any(keyword in t for keyword in job_keywords)
     )
 
-    # jobs_df[jobs_df["matched"]].to_csv("jobtitles_cleaned_matched.csv", index=False)
-    # jobs_df[~jobs_df["matched"]].to_csv("jobtitles_cleaned_unmatched.csv", index=False)
-
-    # merge jobs list and skills list by matching job link
-    jobs_df = jobs_df.drop_duplicates(subset=["job_link"])      # Make sure no job link is double
+    jobs_df = jobs_df.drop_duplicates(subset=["job_link"])
     skills_df = skills_df.drop_duplicates(subset=["job_link"])
 
+    # Zusammenführen der beiden Dataframes basierend auf gemeinsamen Job Link (url)
     matched_jobs_skills_df = pd.merge(jobs_df[jobs_df["matched"]], skills_df, on='job_link', how='inner')
     matched_jobs_skills_df.to_csv("matched_jobs_skills.csv", index=False)
 
@@ -108,14 +109,16 @@ print("final shape of matched jobs and skills dataframe (should be 1180925, 7):"
 
 ### SKILL CLUSTERING
 
-n_skill_clusters = 150 # Defines into how many clusters the skills are divided
+n_skill_clusters = 150 # Definiert Anzahl an Skill Cluster die erstellt werden
 v2_in_place = False
 if not os.path.exists("matched_jobs_skills_with_skill_cluster.csv") or v1_in_place == False:
     print("Clustering Skills...")
     if isinstance(matched_jobs_skills_df['job_skills_cleaned'].iloc[0], str):
         matched_jobs_skills_df['job_skills_cleaned'] = matched_jobs_skills_df['job_skills_cleaned'].apply(ast.literal_eval)
     matched_jobs_skills_with_skill_cluster_df = matched_jobs_skills_df
-    all_skills = [skill for skill_list in matched_jobs_skills_with_skill_cluster_df['job_skills_cleaned'] for skill in skill_list]     # iterates through evey skill list in each line
+    # Speichern aller Skills aus den Skill Listen der einzelnen Jobs
+    all_skills = [skill for skill_list in matched_jobs_skills_with_skill_cluster_df['job_skills_cleaned']
+                  for skill in skill_list]
     skill_counts = Counter(all_skills)
     print(len(skill_counts))
     skills_for_clustering = [skill for skill, count in skill_counts.items() if count >= 2][:50000]
@@ -132,11 +135,15 @@ if not os.path.exists("matched_jobs_skills_with_skill_cluster.csv") or v1_in_pla
         "cluster": cluster_labels
     })
 
-    df_clustered.sort_values(by="cluster").to_csv("clustered_skills.csv", index=False) # Create csv file with all 50'000 skills matched to one of 150 clusters
+    df_clustered.sort_values(by="cluster").to_csv("clustered_skills.csv", index=False)
 
     cluster_map = dict(zip(df_clustered["skill"], df_clustered["cluster"]))
-    matched_jobs_skills_with_skill_cluster_df["skill_clusters"] = matched_jobs_skills_with_skill_cluster_df["job_skills_cleaned"].apply(skills_to_clusters)
-    matched_jobs_skills_with_skill_cluster_df.to_csv("matched_jobs_skills_with_skill_cluster.csv", index=False)
+    matched_jobs_skills_with_skill_cluster_df["skill_clusters"] = (
+        matched_jobs_skills_with_skill_cluster_df["job_skills_cleaned"].apply(skills_to_clusters)
+    )
+    matched_jobs_skills_with_skill_cluster_df.to_csv(
+        "matched_jobs_skills_with_skill_cluster.csv", index=False
+    )
     print("Skills clustered in ", n_skill_clusters, " clusters!")
 else:
     print("Skills already in ", n_skill_clusters, " clusters.")
@@ -144,16 +151,21 @@ else:
     df_clustered = pd.read_csv("clustered_skills.csv")
     v2_in_place = True
 
-print("Final shape of matched jobs and skills with cluster dataframe (should be: 1180925, 8):", matched_jobs_skills_with_skill_cluster_df.shape)
+print("Final shape of matched jobs and skills with cluster dataframe (should be: 1180925, 8):",
+      matched_jobs_skills_with_skill_cluster_df.shape)
 
 ### ONE-HOT ENCODING FOR SKILL CLUSTERS
 
 v3_in_place = False
 if not os.path.exists("skill_clusters_vectors.csv") or v2_in_place == False:
     print("Creating one dimensional vectors for each row...")
-    mlb = MultiLabelBinarizer(classes=range(n_skill_clusters))    # Turns list of cluster numbers into a list with binary entries
-    skill_cluster_matrix = mlb.fit_transform(matched_jobs_skills_with_skill_cluster_df["skill_clusters"])  # each line of df receives a one dimensional vector
-    skill_clusters_vectors_df = pd.DataFrame(skill_cluster_matrix, columns=[f"cluster_{i}" for i in range(n_skill_clusters)])   # put clusters into different columns in df
+    # Umwandlung von Skill Cluster Liste in einen n-dimensionalen One-Hot-Vector
+    mlb = MultiLabelBinarizer(classes=range(n_skill_clusters))
+    skill_cluster_matrix = mlb.fit_transform(matched_jobs_skills_with_skill_cluster_df["skill_clusters"])
+    # Dataframe mit Vektoren wobei jeder Skill eine eigene Spalte hat
+    skill_clusters_vectors_df = pd.DataFrame(skill_cluster_matrix,
+                                             columns=[f"cluster_{i}" for i in range(n_skill_clusters)])
+    # Job Titel wird zu dem Dataframe hinzugefügt und zu dem richtigen Skill Vektor zugeorndet
     skill_clusters_vectors_df["job_title"] = matched_jobs_skills_with_skill_cluster_df["job_title_cleaned"]
     skill_clusters_vectors_df.to_csv("skill_clusters_vectors.csv", index=False)
     print("One dimensional vectors created!")
@@ -167,7 +179,7 @@ print("Final shape of cluster vectors dataframe (should be 1180925, 151):", skil
 ### JOB TITLE CLUSTERING
 
 v4_in_place = False
-n_job_clusters = 500  # Defines into how many clusters the unique jobs are divided
+n_job_clusters = 500  # Definiert Anzahl an Cluster in welche die einzigartigen Jobs zugeordnet werden
 if not os.path.exists("matched_jobs_skills_with_job_cluster.csv") or v3_in_place == False:
     print("Creating Job Clusters")
     unique_titles = matched_jobs_skills_df['job_title_cleaned'].dropna().unique().tolist()
@@ -198,8 +210,8 @@ if not os.path.exists("cluster_industry_preview.csv"):
     print("Creating file to manually match industries to job clusters")
     job_clusters_with_industries_df = (
         matched_jobs_skills_with_job_cluster_df
-        .groupby("job_title_clustered")["job_title_cleaned"]    # to group job titles by clusters
-        .apply(lambda titles: titles.value_counts().head(5).index.tolist())    # take out top 5 job titles of each cluster
+        .groupby("job_title_clustered")["job_title_cleaned"]    # Gruppierung der Job Titel nach Cluster
+        .apply(lambda titles: titles.value_counts().head(5).index.tolist()) # 5 Jobs aus jedem Cluster entnehmen
         .reset_index()
         .rename(columns={"job_title_clustered": "cluster_id", "job_title_cleaned": "example_titles"})
     )
@@ -208,7 +220,11 @@ if not os.path.exists("cluster_industry_preview.csv"):
     job_clusters_with_industries_df.to_csv("cluster_industry_preview.csv", index=False)
     print("File created - Match the industries to the job clusters manually and then rerun the script")
     exit()
+
 elif not v4_in_place:
+    # Diese extra if-Condition wird gebraucht um nochmal abzufragen, dass die aktuelle Datei überschrieben werden darf,
+    # da das bedeutet, dass die Branchen nochmals manuell zugeordnet werden müssen
+
     confirm = input("!! The following step resets your current industry allocation. Are you sure you want to proceed"
                     "and manually match the industries again? (yes/no)")
     if confirm.lower() != "yes":
@@ -217,9 +233,9 @@ elif not v4_in_place:
         print("Creating file to manually match industries to job clusters")
         job_clusters_with_industries_df = (
             matched_jobs_skills_with_job_cluster_df
-            .groupby("job_title_clustered")["job_title_cleaned"]  # to group job titles by clusters
+            .groupby("job_title_clustered")["job_title_cleaned"]  # Gruppierung der Job Titel nach Cluster
             .apply(lambda titles: titles.value_counts().head(
-                5).index.tolist())  # take out top 5 job titles of each cluster
+                5).index.tolist())  # 5 Jobs aus jedem Cluster entnehmen
             .reset_index()
             .rename(columns={"job_title_clustered": "cluster_id", "job_title_cleaned": "example_titles"})
         )
@@ -228,11 +244,12 @@ elif not v4_in_place:
         job_clusters_with_industries_df.to_csv("cluster_industry_preview.csv", index=False)
         print("File created - Match the industries to the job clusters manually and then rerun the script")
         exit()
+
 else:
     print("Industries are matched to job clusters and up to date!")
     job_clusters_with_industries_df = pd.read_csv("cluster_industry_preview.csv", encoding="cp1252")
 
-### SKILL CLUSTER GROUPS - not relevant for ML but for skill selection in Streamlit
+### SKILL CLUSTER GROUPS - nicht relevant für ML aber für Skill Auswahl auf Streamlit
 
 if not os.path.exists("representative_skills_per_cluster.csv") or v2_in_place == False:
     print("Creating File with representative Skills for each cluster")
@@ -261,8 +278,8 @@ else:
 
 if not os.path.exists("trained_random_forest_skills_only.pkl") or v4_in_place == False:
     print("Training Model using Random Forest...")
-    max_depth = 12     # depth of decision trees
-    n_estimators = 75  # amount of decision trees
+    max_depth = 12     # Tiefe der Decision Trees
+    n_estimators = 75  # Menge an Decision Trees
 
     industry_df = job_clusters_with_industries_df
 
@@ -273,20 +290,8 @@ if not os.path.exists("trained_random_forest_skills_only.pkl") or v4_in_place ==
     merged_df = pd.merge(filtered_vectors_df, industry_df, on="cluster_id", how="left")
     merged_df.to_csv("FinalFileForML.csv")
 
-    # Altes x wo Industry noch berücksichtigt wurde
-    # x = merged_df.drop(columns=["cluster_id", "industry", "job_title", "example_titles"], errors="ignore")
-    # x = x.loc[:, ~x.columns.str.contains("Unnamed")]
-
     x = merged_df[[col for col in merged_df.columns if col.startswith("cluster_") and col != "cluster_id"]]
     y = LabelEncoder().fit_transform(merged_df["cluster_id"])
-
-    # Alte Industry Logik
-    # one_hot = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
-    # industry_encoded = one_hot.fit_transform(merged_df[["industry"]])
-    # print(type(industry_encoded))  # muss: <class 'numpy.ndarray'>
-    # print(industry_encoded.dtype)  # muss: float64 oder int64
-    # print(industry_encoded.shape)  # sollte (n_rows, n_industries) sein
-    # x_combined = np.hstack([x.values, industry_encoded])
 
     # Überprüfe type and shape für debugging
     print(x.dtypes)  # Alles sollte float oder int sein
@@ -310,7 +315,8 @@ if not os.path.exists("trained_random_forest_skills_only.pkl") or v4_in_place ==
     relevant_labels = list(labels_in_test & labels_predicted)
 
     rfc_performance = classification_report(y_test, y_pred, labels=relevant_labels)
-    with open("rfc_performance_report_skills_only.txt", "w") as f:  # Save performance report of trained model in txt file
+    # Speichere den Performance Report des trainierten Models
+    with open("rfc_performance_report_skills_only.txt", "w") as f:
         f.write(rfc_performance)
 
     joblib.dump(modelRFC, "trained_random_forest_skills_only.pkl")
