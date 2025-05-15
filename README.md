@@ -36,5 +36,9 @@ MÖLGICHE AUFTRETENDE BUGS UND LÖSUNGEN
 
 INFO ÜBER DATA HANDLING (IRRELEVANT FÜR APP SETUP & APP NUTZUNG)
 
-Das Skript data_handling.py wurde dafür verwendet die Datensätze zu verarbeiten und ein Random Forest ML Model zu trainieren. Das Skript ist nicht notwendig für die Benutzung der App sondern dient lediglich der Erstellung wichtiger Dataframes ("cluster_industry_preview.parquet" & "clustered_skills.parquet") sowie dem ML Model ("trained_random_forest_skills_only.pkl"). Nur diese 3 Dateien sind relevant für die Nutzung der App. Das Auführen von data_handling.py ist prinzipiell nicht notwenig, sofern keine Parameter im ML Model geändert oder die Anzhal der erstellten Job Cluster (default: 500) oder Skill Cluster (default: 150) geändert werden wollen. 
+Das Skript data_handling.py wurde dafür verwendet die Datensätze zu verarbeiten und ein Random Forest ML Model zu trainieren. Das Skript ist nicht notwendig für die Benutzung der App sondern dient lediglich der Erstellung wichtiger Dataframes ("cluster_industry_preview.parquet" & "clustered_skills.parquet") sowie dem ML Model ("trained_random_forest_skills_only.pkl"). Nur diese 3 Dateien sind relevant für die Nutzung der App. Das Auführen von data_handling.py ist prinzipiell nicht notwenig, sofern keine Parameter im ML Model geändert oder die Anzhal der erstellten Job Cluster (default: 500) oder Skill Cluster (default: 150) geändert werden wollen.
+Für das Ausführen von data_handling.py wird folgendes benötigt:
+      - Download des Datensatzes von Kaggle: https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024/data
+      - Zip Datei entpacken und die Dateien "job_skills.csv" und "linkedin_job_postings.csv" in den Ordner DataHandling ablegen
+Nach dem Ausführen sollte noch einmal CSVtoPARQUET.py ausgeführt werden, damit alle Datensätze auch im .parquet Format vorliegen, da die App aus Geschwindigkeitsgründen mit diesem filytype arbeitet. 
 
