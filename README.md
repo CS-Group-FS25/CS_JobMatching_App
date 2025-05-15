@@ -21,16 +21,16 @@ ALLGEMEINE INFO ZUR APP NUTZUNG
 Die App hat 3 Hauptfunktionen: 
 - Klassische Suche: Zeigt Job basierend auf Stichwort und Location an
 
-- Persönlicher JobMatcher (Hauptfunktion): Input von persönlichem Profil inkl. Skills für zu dem Vorschlag von 5 Jobs die am besten zu einem passen. Dieser Prozess verwendet das trainierte ML Modell
+- Persönlicher JobMatcher (Hauptfunktion): Input von persönlichem Profil inkl. Skills führt zum Vorschlag von 5 Jobs, die am besten zu einem passen. Dieser Prozess verwendet das trainierte ML Modell
   
-- Job Dashboard (Hauptfunktion): Auf das Dashboard kann erst zugegriffen werden, wenn der Persönliche Matcher absolviert wurde. Das Dashboard zeigt dann die Top 5 Jobs dem User an und ermöglicht einen Überblick über Gehalt und Jobangebote in der Nähe.
+- Job Dashboard (Hauptfunktion): Auf das Dashboard kann erst zugegriffen werden, wenn der Persönliche Matcher absolviert wurde. Das Dashboard zeigt die Top 5 Jobs des User an und ermöglicht einen Überblick über Gehalt und Jobangebote in der Nähe.
   
-- Gehaltsfinder: Zeigt Durschnittsgehalt, Gehaltsverteilung und Gehaltstrend nach Branchen an
+- Gehaltsfinder: Zeigt Durschnittsgehalt, Gehaltsverteilung und Gehaltstrend nach Branchen(wenn verfügbar) an
 
 
 MÖLGICHE AUFTRETENDE BUGS UND LÖSUNGEN
 
-- Auftreten einer leeren Fläche im Job Dashboard zwischen Karte und Job Angeboten und Seite wird am unteren Ende geöffnet (Grund: laut Reddit ein Streamlit bug). Neuladen der Seite oder ein Wechsel zu einem anderen Job (über den Top 5 Jobs Tab) und wieder zurück zum bisherigen Job löst das Problem. 
+- Auftreten einer leeren Fläche im Job Dashboard zwischen der Karte und der Jobangebote und Seite wird am unteren Ende geöffnet (Grund: laut Reddit ein Streamlit bug). Neuladen der Seite oder ein Wechsel zu einem anderen Job (über den Top 5 Jobs Tab) und wieder zurück zum bisherigen Job löst das Problem. 
 - Verwendung der 3 grossen Menu Buttons auf der Startseite kann zu längerer Ladezeit führen (Grund: Verwendung von page_redirect). Sollte die Ladezeit zu lange sein, App neuladen und auf alternative Navigation über Sidebar Menu ausweichen. 
 
 
