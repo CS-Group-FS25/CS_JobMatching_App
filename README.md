@@ -40,5 +40,6 @@ Das Skript data_handling.py wurde dafür verwendet die Datensätze zu verarbeite
 Für das Ausführen von data_handling.py wird folgendes benötigt:
 - Download des Datensatzes von Kaggle: https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024/data
 - Zip Datei entpacken und die Dateien "job_skills.csv" und "linkedin_job_postings.csv" in den Ordner DataHandling ablegen
+
 Nach dem Ausführen sollte noch einmal CSVtoPARQUET.py ausgeführt werden, damit alle Datensätze auch im .parquet Format vorliegen, da die App aus Geschwindigkeitsgründen mit diesem filytype arbeitet. 
 
