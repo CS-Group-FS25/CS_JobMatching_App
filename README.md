@@ -30,7 +30,7 @@ Die App hat 3 Hauptfunktionen:
 
 MÖLGICHE AUFTRETENDE BUGS UND LÖSUNGEN
 
-- Auftreten einer leeren Fläche im Job Dashboard zwischen Karte und Job Angeboten. Neuladen der Seite oder ein Wechsel zu einem anderen Job (über den Top 5 Jobs Tab) und wieder zurück zum bisherigen Job löst das Problem. 
+- Auftreten einer leeren Fläche im Job Dashboard zwischen Karte und Job Angeboten und Seite wird am unteren Ende geöffnet (Grund: laut Reddit ein Streamlit bug). Neuladen der Seite oder ein Wechsel zu einem anderen Job (über den Top 5 Jobs Tab) und wieder zurück zum bisherigen Job löst das Problem. 
 - Verwendung der 3 grossen Menu Buttons auf der Startseite kann zu längerer Ladezeit führen (Grund: Verwendung von page_redirect). Sollte die Ladezeit zu lange sein, App neuladen und auf alternative Navigation über Sidebar Menu ausweichen. 
 
 
