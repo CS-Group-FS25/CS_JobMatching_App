@@ -1,3 +1,4 @@
-This is the description of the App of CS Group Nr. XX. The App focuses on finding personal job matches. 
+Das ist die Beschreibung der App von CS Gruppe Nr. 01.08 (Dominik Rück, Jakob Schäfer, Justus Rothdach, Nicolas Schmid). Das Ziel der App ist es, den perfekten Job basierend auf persönlichen Skills und Präferenzen zu finden.
 
-This is how it works:
+INFO ÜBER INSTALLATION UND SETUP
+
